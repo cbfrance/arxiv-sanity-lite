@@ -1,78 +1,74 @@
-/* Header */
 #header {
-  height: 24px;
-  background-color: #840000;
+  background-color: var(--color-header-bg);
   color: white;
-  padding-top: 8px;
-  padding-left: 10px;
-  border-bottom: 1px solid #622;
+  border-bottom: 1px solid var(--color-header-border);
+  display: flex;
 }
-#home-link {
-  display: inline-block;
+
+#header > a {
+  margin: 0.5rem;
 }
-#stats-link {
-  float: right;
-  margin: 0 10px 0 10px;
-}
-#login-link {
-  float: right;
-  margin: 0 10px 0 10px;
-}
+
 #controls {
-  margin: 10px 40px 0 40px;
-  background-color: #eee;
+  margin: 0.5rem 2.5rem 0 2.5rem;
+  background-color: var(--color-controls-bg);
 }
 
 #wrap {
-  margin: 10px 40px 0 40px;
-  font-size: 18px;
+  margin: 0.5rem 2.5rem 0 2.5rem;
 }
+
 #tagwrap {
-  margin: 10px 40px 0 40px;
-  font-size: 18px;
+  margin: 0.5rem 2.5rem 0 2.5rem;
 }
+
 #wordwrap {
-  margin: 10px 40px 0 40px;
-  font-size: 14px;
+  margin: 0.5rem 2.5rem 0 2.5rem;
 }
 
 #statswrap {
-  margin: 10px 40px 0 40px;
-  font-size: 16px;
+  margin: 0.5rem 2.5rem 0 2.5rem;
 }
+
 #profilewrap {
-  margin: 10px 40px 0 40px;
-  font-size: 16px;
+  margin: 0.5rem 2.5rem 0 2.5rem;
 }
+
 #aboutwrap {
-  margin: 10px 40px 0 40px;
-  font-size: 16px;
+  margin: 0.5rem 2.5rem 0 2.5rem;
 }
+
 #tags_field {
-  width: 100px;
+  width: 12rem;
 }
+
 #pid_field {
-  width: 60px;
+  width: 8rem;
 }
+
 #time_filter_field {
-  width: 20px;
+  width: 3rem;
 }
+
 #page_number_field {
-  width: 20px;
+  width: 3rem;
 }
+
 #svm_c_field {
-  width: 30px;
+  width: 4rem;
 }
+
 #tagList {
   display: inline-block;
 }
+
 #inspect_svm {
   display: inline-block;
-  font-size: 16px;
   cursor: pointer;
   text-decoration: underline;
-  color: #009;
+  color: var(--color-secondary);
 }
+
 @media only screen and (max-width: 720px) {
   #controls,
   #wrap,
@@ -80,18 +76,19 @@
   #wordwrap,
   #aboutwrap,
   #statswrap {
-    margin: 10px 20px 0 20px;
+    margin: 0.5rem 3rem 0 3rem;
   }
 }
+
 #pagination {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 3rem;
 }
+
 #link-prev-page,
 #link-next-page {
-  margin: 0 5px 0 5px;
-  font-size: 16px;
   cursor: pointer;
-  color: #009;
+  margin: 0 0.5rem 0 0.5rem;
+  color: var(--color-secondary);
   text-decoration: underline;
 }

@@ -8,7 +8,8 @@ const Word = props => {
     return (
         <div class='rel_word'>
             <div class='rel_word_weight'>{p.weight.toFixed(2)}</div>
-            <div class='rel_word_idf'>{p.idf.toFixed(2)}</div>
+            {/* @TODO: on the paper list view, p.idf is undefined. @cbfrance 2023-Sept-9 */}
+            {/* <div class='rel_word_idf'>{p.idf.toFixed(2)}</div> */}
             <div class="rel_word_txt">{p.word}</div>
         </div>
     )

@@ -21,12 +21,12 @@ var user = {{ user | tojson }};
 
 <body>
 <div id="header">
-    <a href="/" id="home-link">arxiv-sanity</a>
-    <a href="/profile" id="login-link">
+    <a href="/">arxiv-sanity</a>
+    <a href="/profile">
         {{ 'profile' if user else 'login' }}
     </a>
-    <a href="/stats" id="stats-link">stats</a>
-    <a href="/about" id="stats-link">about</a>
+    <a href="/stats">stats</a>
+    <a href="/about">about</a>
 </div>
 
 {% block content %}

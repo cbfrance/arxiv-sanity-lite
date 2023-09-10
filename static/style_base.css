@@ -1,5 +1,8 @@
 :root {
   --color-primary: #000000;
+  --color-header-bg: #840000;
+  --color-header-border: #622;
+  --color-controls-bg: #eee;
 }
 
 body {
