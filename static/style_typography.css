@@ -1,0 +1,171 @@
+body {
+  font-family: sans-serif;
+  line-height: 1.2;
+}
+
+.rel_title {
+  display: inline-block;
+}
+
+.rel_title a {
+  color: #844;
+}
+
+.rel_paper {
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: white;
+  border-radius: 5px;
+}
+
+.rel_score {
+  display: inline-block;
+  margin-right: 6px;
+  font-weight: bold;
+}
+.rel_authors {
+  font-style: italic;
+  font-size: 16px;
+}
+.rel_time {
+  color: #050;
+  display: inline-block;
+  font-size: 16px;
+}
+.rel_abs {
+  color: #333;
+  font-size: 14px;
+}
+.rel_tags {
+  color: #009;
+  font-size: 16px;
+  display: inline-block;
+  margin-left: 5px;
+}
+.rel_tag {
+  /* deletes a whole tag */
+  position: absolute;
+  color: white;
+  left: 7px;
+  cursor: pointer;
+  text-align: center;
+  border-radius: 3px;
+  background-color: #f55;
+  width: 22px;
+  height: 22px;
+}
+.rel_utag {
+  /* shows an active tag for a paper */
+  background-color: #009;
+  color: #fff;
+  font-size: 16px;
+  display: inline-block;
+  margin-right: 5px;
+  padding: 0 4px 0 4px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.rel_utag_all {
+  /* distinguishes the special 'all' tag from others */
+  background-color: #909;
+}
+.rel_utag_add {
+  /* adds a paper to a tag */
+  background-color: #55f;
+  margin-right: 2px;
+  width: 12px;
+  text-align: center;
+}
+.rel_utag_sub {
+  /* subs a tag from a paper */
+  background-color: #f55;
+  width: 12px;
+  text-align: center;
+}
+.rel_utag a {
+  color: white;
+  text-decoration: none;
+}
+.rel more {
+  font-size: 10px;
+}
+
+#sbox {
+  width: 100%;
+}
+#qfield {
+  width: 100%;
+  box-sizing: border-box;
+
+  height: 40px;
+  font-size: 22px;
+
+  border: solid 1px #999;
+  color: "#333";
+
+  padding-left: 50px;
+
+  background-image: url("/static/search.png");
+  background-repeat: no-repeat;
+  background-position: left center;
+  outline: 0;
+}
+#cbox {
+  margin-top: 5px;
+  font-size: 14px;
+}
+#cbox input {
+  margin-bottom: 5px;
+}
+#cbox_fast {
+  font-size: 14px;
+}
+#cbox_fast a {
+  display: inline-block;
+  background-color: #eee;
+  padding: 3px;
+}
+#header a {
+  color: white;
+  text-decoration: none;
+}
+.rel_more {
+  font-size: 14px;
+  display: inline-block;
+  margin-right: 10px;
+}
+.rel_inspect {
+  font-size: 14px;
+  display: inline-block;
+  margin-right: 10px;
+}
+#wordList {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+.rel_word {
+  display: inline-block;
+  background-color: #eef;
+  padding: 2px;
+  margin: 2px;
+}
+.rel_word_weight {
+  display: inline-block;
+  color: #009;
+}
+.rel_word_idf {
+  display: inline-block;
+  margin-left: 5px;
+}
+.rel_word_txt {
+  display: inline-block;
+  margin-left: 5px;
+}
+
+#log-fun-warn {
+  text-align: center;
+  background-color: #ffd;
+  color: #777;
+  font-size: 14px;
+  padding: 3px;
+}

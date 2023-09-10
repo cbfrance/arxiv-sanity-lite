@@ -1,0 +1,9 @@
+:root {
+  --color-primary: #000000;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #eee;
+}
