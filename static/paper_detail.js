@@ -8,7 +8,7 @@ const PaperLite = props => {
             <div class='rel_authors'>{p.authors}</div>
             <div class="rel_time">{p.time}</div>
             <div class='rel_tags'>{p.tags}</div>
-            <div class='rel_abs'>{p.summary}</div>
+            <div class='rel_abs'><p>{p.summary}</p></div>
         </div>
     )
 }

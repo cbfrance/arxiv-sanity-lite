@@ -1,7 +1,5 @@
 'use strict';
 
-
-
 const Word = props => {
     const p = props.word;
     // word, weight, idf
