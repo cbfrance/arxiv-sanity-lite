@@ -13,14 +13,27 @@ import argparse
 from aslite.arxiv import get_response, parse_response
 from aslite.db import get_papers_db, get_metas_db
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(name)s %(levelname)s %(asctime)s %(message)s",
+        datefmt="%m/%d/%Y %I:%M:%S %p",
+    )
 
-    logging.basicConfig(level=logging.INFO, format='%(name)s %(levelname)s %(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
-
-    parser = argparse.ArgumentParser(description='Arxiv Daemon')
-    parser.add_argument('-n', '--num', type=int, default=100, help='up to how many papers to fetch')
-    parser.add_argument('-s', '--start', type=int, default=0, help='start at what index')
-    parser.add_argument('-b', '--break-after', type=int, default=3, help='how many 0 new papers in a row would cause us to stop early? or 0 to disable.')
+    parser = argparse.ArgumentParser(description="Arxiv Daemon")
+    parser.add_argument(
+        "-n", "--num", type=int, default=100, help="up to how many papers to fetch"
+    )
+    parser.add_argument(
+        "-s", "--start", type=int, default=0, help="start at what index"
+    )
+    parser.add_argument(
+        "-b",
+        "--break-after",
+        type=int,
+        default=3,
+        help="how many 0 new papers in a row would cause us to stop early? or 0 to disable.",
+    )
     args = parser.parse_args()
     print(args)
     """
@@ -30,21 +43,26 @@ if __name__ == '__main__':
     """
 
     # query string of papers to look for
-    q = 'cat:cs.CV+OR+cat:cs.LG+OR+cat:cs.CL+OR+cat:cs.AI+OR+cat:cs.NE+OR+cat:cs.RO'
+    # IR = Information Retrieval
+    # CL = Computation and Language
+    # HC = HCI
+    # CY = Computers and Society
+    # q = "cat:cs.IR+OR+cat:cs.CL+OR+cat:cs.HC+OR+cat:cs.CY"
+    q = "cat:cs.HC+OR+cat:cs.CY"
 
-    pdb = get_papers_db(flag='c')
-    mdb = get_metas_db(flag='c')
+    pdb = get_papers_db(flag="c")
+    mdb = get_metas_db(flag="c")
     prevn = len(pdb)
 
     def store(p):
-        pdb[p['_id']] = p
-        mdb[p['_id']] = {'_time': p['_time']}
+        pdb[p["_id"]] = p
+        mdb[p["_id"]] = {"_time": p["_time"]}
 
     # fetch the latest papers
     total_updated = 0
     zero_updates_in_a_row = 0
     for k in range(args.start, args.start + args.num, 100):
-        logging.info('querying arxiv api for query %s at start_index %d' % (q, k))
+        logging.info("querying arxiv api for query %s at start_index %d" % (q, k))
 
         # attempt to fetch a batch of papers from arxiv api
         ntried = 0
@@ -54,22 +72,24 @@ if __name__ == '__main__':
                 papers = parse_response(resp)
                 time.sleep(0.5)
                 if len(papers) == 100:
-                    break # otherwise we have to try again
+                    break  # otherwise we have to try again
             except Exception as e:
                 logging.warning(e)
                 logging.warning("will try again in a bit...")
                 ntried += 1
                 if ntried > 1000:
-                    logging.error("ok we tried 1,000 times, something is srsly wrong. exitting.")
+                    logging.error(
+                        "ok we tried 1,000 times, something is srsly wrong. exitting."
+                    )
                     sys.exit()
                 time.sleep(2 + random.uniform(0, 4))
 
         # process the batch of retrieved papers
         nhad, nnew, nreplace = 0, 0, 0
         for p in papers:
-            pid = p['_id']
+            pid = p["_id"]
             if pid in pdb:
-                if p['_time'] > pdb[pid]['_time']:
+                if p["_time"] > pdb[pid]["_time"]:
                     # replace, this one is newer
                     store(p)
                     nreplace += 1
@@ -84,18 +104,25 @@ if __name__ == '__main__':
         total_updated += nreplace + nnew
 
         # some diagnostic information on how things are coming along
-        logging.info(papers[0]['_time_str'])
-        logging.info("k=%d, out of %d: had %d, replaced %d, new %d. now have: %d" %
-             (k, len(papers), nhad, nreplace, nnew, prevn))
+        logging.info(papers[0]["_time_str"])
+        logging.info(
+            "k=%d, out of %d: had %d, replaced %d, new %d. now have: %d"
+            % (k, len(papers), nhad, nreplace, nnew, prevn)
+        )
 
         # early termination criteria
         if nnew == 0:
             zero_updates_in_a_row += 1
             if args.break_after > 0 and zero_updates_in_a_row >= args.break_after:
-                logging.info("breaking out early, no new papers %d times in a row" % (args.break_after, ))
+                logging.info(
+                    "breaking out early, no new papers %d times in a row"
+                    % (args.break_after,)
+                )
                 break
             elif k == 0:
-                logging.info("our very first call for the latest there were no new papers, exitting")
+                logging.info(
+                    "our very first call for the latest there were no new papers, exitting"
+                )
                 break
         else:
             zero_updates_in_a_row = 0

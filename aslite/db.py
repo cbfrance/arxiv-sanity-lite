@@ -143,7 +143,7 @@ def get_last_active_db(flag="r", autocommit=True):
     return ladb
 
 
-def get_email_db(flag="r", autocommit=True):
+def get_email_db(flag="c", autocommit=True):
     assert flag in ["r", "c"]
     edb = SqliteDict(DICT_DB_FILE, tablename="email", flag=flag, autocommit=autocommit)
     return edb

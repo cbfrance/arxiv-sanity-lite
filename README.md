@@ -49,12 +49,6 @@ To serve the flask server locally with poetry:
 export FLASK_APP=serve.py; poetry run flask run
 ```
 
-#### Todos
-
-- Make website mobile friendly with media queries in css etc
-- The metas table should not be a sqlitedict but a proper sqlite table, for efficiency
-- Build a reverse index to support faster search, right now we iterate through the entire database
-
 #### License
 
 MIT
