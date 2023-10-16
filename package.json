@@ -6,8 +6,9 @@
   "scripts": {
     "cy:open": "npx cypress open",
     "cy:run": "npx cypress run --record --key 22d0cd56-3dc9-4a42-874e-262e4d3683a",
-    "serve": "export FLASK_APP=serve.py; poetry run flask run",
+    "serve": "poetry run flask run",
     "arxiv-daemon": "poetry run python3 arxiv_daemon.py",
-    "compute-tfidf": "poetry run python3 compute.py"
+    "compute-tfidf": "poetry run python3 compute.py",
+    "thumb-daemon": "poetry run python3 thumb_daemon.py"
   }
 }

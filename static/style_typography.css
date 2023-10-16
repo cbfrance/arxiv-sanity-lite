@@ -144,16 +144,18 @@ body {
   display: inline-block;
   margin-right: 1rem;
 }
+
 #wordList {
-  margin-top: 5px;
+  margin-top: 1rem;
   margin-bottom: 1rem;
 }
 
 .rel_word {
-  display: inline-block;
   background-color: var(--color-card-bg);
-  padding: 2px;
   margin: 2px;
+  font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier,
+    monospace;
+  font-size: 12px;
 }
 
 .rel_word_weight {

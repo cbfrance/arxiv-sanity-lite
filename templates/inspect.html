@@ -9,9 +9,12 @@ var words_desc = {{ words_desc | tojson }};
 {% endblock %}
 
 {% block content %}
-<div id="wrap">
-</div>
-<div id="wordwrap">
+<div class="row">
+    <div id="wrap" class="col">
+        <img src="{{ paper.thumb_url }}" alt="Paper thumbnail">
+    </div>
+    <div id="wordwrap" class="col">
+    </div>
 </div>
 {% endblock %}
 

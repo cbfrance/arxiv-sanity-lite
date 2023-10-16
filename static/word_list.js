@@ -3,9 +3,18 @@
 const Word = props => {
     const p = props.word;
     // word, weight, idf
+    const containerStyle = {
+        position: 'relative'
+    };
+    const barStyle = {
+        width: `${p.weight * 100}%`,
+        backgroundColor: 'rgba(0,0,0,0.1)',
+        height: '100%',
+        position: 'absolute'
+    };
     return (
-        <div class='rel_word'>
-            <div class='rel_word_weight'>{p.weight.toFixed(2)}</div>
+        <div style={containerStyle} class='rel_word'>
+            <div style={barStyle}></div>
             {/* @TODO: on the paper list view, p.idf is undefined. @cbfrance 2023-Sept-9 */}
             {/* <div class='rel_word_idf'>{p.idf.toFixed(2)}</div> */}
             <div class="rel_word_txt">{p.word}</div>
@@ -16,7 +25,8 @@ const Word = props => {
 const WordList = props => {
     const lst = props.words;
     const words_desc = props.words_desc;
-    const wlst = lst.map((jword, ix) => <Word key={ix} word={jword} />);
+    const sortedList = lst.sort((a, b) => b.weight - a.weight);
+    const wlst = sortedList.map((jword, ix) => <Word key={ix} word={jword} />);
     return (
         <div>
             <div>{words_desc}</div>
