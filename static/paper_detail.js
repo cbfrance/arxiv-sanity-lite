@@ -2,6 +2,8 @@
 
 const PaperLite = props => {
     const p = props.paper;
+    const thumb_img = p.thumb_url === '' ? null : <div data-cy="img_thumb" class='rel_img'><img src={p.thumb_url} /></div>;
+
     return (
         <div class='rel_paper'>
             <div class='rel_title'><a href={'http://arxiv.org/abs/' + p.id}>{p.title}</a></div>
@@ -9,8 +11,10 @@ const PaperLite = props => {
             <div class="rel_time">{p.time}</div>
             <div class='rel_tags'>{p.tags}</div>
             <div class='rel_abs'><p>{p.summary}</p></div>
+            {thumb_img}
         </div>
     )
 }
 
 ReactDOM.render(<PaperLite paper={paper} />, document.getElementById('wrap'))
+
