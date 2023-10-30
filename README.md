@@ -49,6 +49,17 @@ To serve the flask server locally with poetry:
 export FLASK_APP=serve.py; poetry run flask run
 ```
 
+Or you can use `npm run serve`, you'll need to take a few steps to ensure the pyenv / poetry environment is setup.
+
+```
+pyenv local 3.11
+poetry install
+poetry env use $(pyenv which python3)
+poetry install
+poetry shell
+npm run serve
+```
+
 #### License
 
 MIT
