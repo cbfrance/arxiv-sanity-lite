@@ -32,7 +32,7 @@ from aslite.db import load_features
 # -----------------------------------------------------------------------------
 # inits and globals
 
-RET_NUM = 25  # number of papers to return per page
+RET_NUM = 250  # number of papers to return per page
 
 app = Flask(__name__)
 
@@ -223,8 +223,7 @@ def default_context():
     return context
 
 
-@app.route("/", methods=["GET"])
-def main():
+def main_handler():
     # default settings
     default_rank = "time"
     default_tags = ""
@@ -331,7 +330,19 @@ def main():
     context["gvars"]["search_query"] = opt_q
     context["gvars"]["svm_c"] = str(C)
     context["gvars"]["page_number"] = str(page_number)
+    return context
+
+
+@app.route("/", methods=["GET"])
+def main():
+    context = main_handler()
     return render_template("index.html", **context)
+
+
+@app.route("/visual", methods=["GET"])
+def visual():
+    context = main_handler()
+    return render_template("visual.html", **context)
 
 
 @app.route("/inspect", methods=["GET"])

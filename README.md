@@ -33,10 +33,10 @@ If you'd like to run your own instance on the interwebs I recommend simply runni
 
 #### Installation
 
-Install via poetry:
+Install via pip:
 
 ```bash
-poetry install
+pip install -r requirements.txt
 ```
 
 (Optional) Finally, if you'd like to send periodic emails to users about new papers, see the `send_emails.py` script. You'll also have to `pip install sendgrid`. I run this script in a daily cron job.
@@ -46,18 +46,7 @@ poetry install
 To serve the flask server locally with poetry:
 
 ```bash
-export FLASK_APP=serve.py; poetry run flask run
-```
-
-Or you can use `npm run serve`, you'll need to take a few steps to ensure the pyenv / poetry environment is setup.
-
-```
-pyenv local 3.11
-poetry install
-poetry env use $(pyenv which python3)
-poetry install
-poetry shell
-npm run serve
+export FLASK_APP=serve.py; flask run
 ```
 
 #### License
