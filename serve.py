@@ -32,7 +32,7 @@ from aslite.db import load_features
 # -----------------------------------------------------------------------------
 # inits and globals
 
-RET_NUM = 250  # number of papers to return per page
+RET_NUM = 100  # number of papers to return per page
 
 app = Flask(__name__)
 
@@ -469,7 +469,7 @@ def sub(pid=None, tag=None):
     with get_tags_db(flag="c") as tags_db:
         # if the user doesn't have any tags, there is nothing to do
         if not g.user in tags_db:
-            return "user has no library of tags ¯\_(ツ)_/¯"
+            return "user has no library of tags (ツ)_/¯"
 
         # fetch the user library object
         d = tags_db[g.user]

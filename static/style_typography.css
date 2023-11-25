@@ -2,7 +2,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
     Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   line-height: 1.6;
-  font-size: 14px;
+  font-size: 11px;
 }
 
 .rel_title {
@@ -74,7 +74,6 @@ body {
 .rel_utag_add {
   /* adds a paper to a tag */
   background-color: var(--color-bg-3);
-  background-color: ;
   margin-right: 2px;
   width: 12px;
   text-align: center;

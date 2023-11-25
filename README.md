@@ -1,5 +1,14 @@
 # arxiv-sanity-lite
 
+Todos to consider:
+
+- /visual endpoint that has image focus
+- improve the speed of the image script, thumb_daemon.py
+- improve the organization of the scripts, clarify which is run when
+- explore hosting
+
+---
+
 A much lighter-weight arxiv-sanity from-scratch re-write. Periodically polls arxiv API for new papers. Then allows users to tag papers of interest, and recommends new papers for each tag based on SVMs over tfidf features of paper abstracts. Allows one to search, rank, sort, slice and dice these results in a pretty web UI. Lastly, arxiv-sanity-lite can send you daily emails with recommendations of new papers based on your tags. Curate your tags, track recent papers in your area, and don't miss out!
 
 I am running a live version of this code on [arxiv-sanity-lite.com](https://arxiv-sanity-lite.com).
@@ -49,6 +58,29 @@ To serve the flask server locally with poetry:
 export FLASK_APP=serve.py; flask run
 ```
 
+#### Usage with poetry and NPM scripts
+
+Or you can use `npm run serve`, you'll need to take a few steps to ensure the pyenv / poetry environment is setup.
+
+```
+optionally: `pyenv local 3.11` or similar
+
+
+Install with poetry `poetry install`
+
+
+Link poetry and pyenv: `poetry env use $(pyenv which python3)`
+
+Activate poetry environment linked to correct python hopefully:
+
+poetry shell
+
+Run poetry via NPM script:
+
+npm run serve
+
+
 #### License
 
 MIT
+```

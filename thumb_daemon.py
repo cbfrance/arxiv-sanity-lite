@@ -9,6 +9,7 @@ import os
 import time
 import random
 import requests
+import shutil
 from subprocess import Popen
 from aslite.db import get_papers_db, get_metas_db
 
@@ -34,6 +35,9 @@ for i, key in enumerate(keys):
 
     # the path where we would store the thumbnail for this key
     thumb_path = os.path.join(THUMB_DIR, key + ".jpg")
+
+    # Check the local cache first
+    # Skip if already generated
     if os.path.exists(thumb_path):
         continue
 
@@ -55,7 +59,18 @@ for i, key in enumerate(keys):
         print("error downloading the pdf at url", url)
         print(e)
         continue
-    time.sleep(5 + random.uniform(0, 5))  # take a breather
+
+    # check the downloaded file
+    with open(os.path.join(TMP_DIR, "paper.pdf"), "rb") as f:
+        magic_number = f.read(4)
+    if magic_number != b"%PDF":
+        print("downloaded file is not a pdf, skipping")
+        # copy the placeholder image to the thumbnail path
+        placeholder_image_path = os.path.join("static", "no-image.jpg")
+        shutil.copy(placeholder_image_path, thumb_path)
+        continue
+    else:
+        time.sleep(5 + random.uniform(0, 5))  # take a breather 😴
 
     # mv away the previous temporary files if they exist
     if os.path.isfile(os.path.join(TMP_DIR, "thumb-0.png")):

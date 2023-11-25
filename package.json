@@ -9,6 +9,7 @@
     "serve": "export FLASK_APP=serve.py; poetry run flask run",
     "arxiv-daemon": "poetry run python3 arxiv_daemon.py",
     "compute-tfidf": "poetry run python3 compute.py",
-    "thumb-daemon": "poetry run python3 thumb_daemon.py"
+    "thumb-daemon": "poetry run python3 thumb_daemon.py",
+    "run-all": "npm run arxiv-daemon && npm run computer-tfidf && npm run thumb-daemon"
   }
 }
