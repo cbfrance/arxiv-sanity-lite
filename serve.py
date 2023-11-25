@@ -20,6 +20,10 @@ from flask import render_template
 from flask import g  # global session-level object
 from flask import session
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from aslite.db import (
     get_papers_db,
     get_metas_db,
@@ -37,6 +41,7 @@ RET_NUM = 100  # number of papers to return per page
 app = Flask(__name__)
 
 app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.config["DEBUG"] = os.getenv("FLASK_ENV") == "development"
 
 # set the secret key so we can cryptographically sign cookies and maintain sessions
 if os.path.isfile("secret_key.txt"):
@@ -339,13 +344,13 @@ def main_handler():
 @app.route("/", methods=["GET"])
 def main():
     context = main_handler()
-    return render_template("index.html", **context)
+    return render_template("index.html", debug=app.config["DEBUG"], **context)
 
 
 @app.route("/visual", methods=["GET"])
 def visual():
     context = main_handler()
-    return render_template("visual.html", **context)
+    return render_template("visual.html", debug=app.config["DEBUG"], **context)
 
 
 @app.route("/inspect", methods=["GET"])

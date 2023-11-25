@@ -62,25 +62,30 @@ export FLASK_APP=serve.py; flask run
 
 Or you can use `npm run serve`, you'll need to take a few steps to ensure the pyenv / poetry environment is setup.
 
-```
 optionally: `pyenv local 3.11` or similar
 
-
 Install with poetry `poetry install`
-
 
 Link poetry and pyenv: `poetry env use $(pyenv which python3)`
 
 Activate poetry environment linked to correct python hopefully:
 
-poetry shell
+`poetry shell`
 
 Run poetry via NPM script:
 
-npm run serve
+`npm run serve`
 
+### Troubleshooting
+
+You might need to turn off airplay reciever on your mac to get the server to run.
+
+`On macOS, try disabling the 'AirPlay Receiver' service from System Preferences -> General -> AirDrop & Handoff.`
 
 #### License
 
 MIT
+
+```
+
 ```
