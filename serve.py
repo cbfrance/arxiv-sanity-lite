@@ -36,6 +36,8 @@ RET_NUM = 100  # number of papers to return per page
 
 app = Flask(__name__)
 
+app.config["TEMPLATES_AUTO_RELOAD"] = True
+
 # set the secret key so we can cryptographically sign cookies and maintain sessions
 if os.path.isfile("secret_key.txt"):
     # example of generating a good key on your system is:
@@ -45,6 +47,7 @@ else:
     print("WARNING: no secret key found, using default devkey")
     sk = "devkey"
 app.secret_key = sk
+
 
 # -----------------------------------------------------------------------------
 # globals that manage the (lazy) loading of various state for a request

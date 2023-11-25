@@ -26,9 +26,9 @@ const Paper = (props) => {
   const inspect_url = "/inspect?pid=" + p.id;
   const thumb_img =
     p.thumb_url === "" ? null : (
-      <div class="rel_img">
+      <canvas id="wrap" width="800" height="200">
         <img src={p.thumb_url} />
-      </div>
+      </canvas>
     );
   // if the user is logged in then we can show add/sub buttons
   let utag_controls = null;
