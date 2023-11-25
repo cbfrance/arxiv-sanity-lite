@@ -10,6 +10,14 @@ const UTag = (props) => {
   );
 };
 
+const Thumbnail = (props) => {
+  const p = props.paper;
+
+  const thumb_img = p.thumb_url === "" ? null : <img src={p.thumb_url} />;
+
+  return thumb_img;
+};
+
 const Paper = (props) => {
   const p = props.paper;
 
@@ -24,12 +32,7 @@ const Paper = (props) => {
   const utags = p.utags.map((utxt, ix) => <UTag key={ix} tag={utxt} />);
   const similar_url = "/?rank=pid&pid=" + p.id;
   const inspect_url = "/inspect?pid=" + p.id;
-  const thumb_img =
-    p.thumb_url === "" ? null : (
-      <canvas id="wrap" width="800" height="200">
-        <img src={p.thumb_url} />
-      </canvas>
-    );
+
   // if the user is logged in then we can show add/sub buttons
   let utag_controls = null;
   if (user) {
@@ -56,7 +59,9 @@ const Paper = (props) => {
       <div class="rel_time">{p.time}</div>
       <div class="rel_tags">{p.tags}</div>
       {utag_controls} */}
-      {thumb_img}
+      <div class="rel_img">
+        <Thumbnail paper={p} />
+      </div>
 
       {/* <div class="rel_abs">{p.summary}</div> */}
       <div class="rel_more">
@@ -70,6 +75,18 @@ const Paper = (props) => {
 };
 
 const PaperList = (props) => {
+  const lst = props.papers;
+  const plst = lst.map((jpaper, ix) => <Paper key={ix} paper={jpaper} />);
+  return (
+    <div>
+      <div id="paperList" class="rel_papers">
+        {plst}
+      </div>
+    </div>
+  );
+};
+
+const MiniMap = (props) => {
   const lst = props.papers;
   const plst = lst.map((jpaper, ix) => <Paper key={ix} paper={jpaper} />);
   return (
@@ -124,8 +141,17 @@ const TagList = (props) => {
   );
 };
 
+// render papers into mini map
+ReactDOM.render(
+  <MiniMap papers={papers} />,
+  document.getElementById("wrap-canvas")
+);
+
 // render papers into #wrap
-ReactDOM.render(<PaperList papers={papers} />, document.getElementById("wrap"));
+ReactDOM.render(
+  <PaperList papers={papers} />,
+  document.getElementById("wrap-papers")
+);
 
 // render tags into #tagwrap, if it exists
 let tagwrap_elt = document.getElementById("tagwrap");

@@ -97,9 +97,14 @@ var move_page = function(int_offset) {
 {% endif %}
 
 <!-- ==================================== -->
-<!-- Main canvas -->
+<!-- Main canvas renders image tags -->
 <!-- ==================================== -->
-<canvas id="wrap" width="800px" height="800px"></canvas>
+<div id="wrap-papers" width="800px" height="800px"></div>
+
+<!-- ==================================== -->
+<!-- Mini map renders loaded images into canvas -->
+<!-- ==================================== -->
+<canvas id="wrap-canvas" width="800px" height="800px"></canvas>
 
 <!-- links to previous and next pages -->
 <div id="pagination">
