@@ -1,0 +1,44 @@
+/* Classic mode */
+@font-face {
+    font-family: 'ChicagoFLF';
+    src: url('fonts/ChicagoFLF.ttf') format('truetype'); /* Safari, Android, iOS */
+  }
+  
+  body.classic-mode {
+    --button-box-shadow:
+  inset -1px -1px 0px 0px #777,
+  inset -2px -2px 0px 0px #aaa,
+  inset 1px 1px 0px 0px #ddd,
+  inset 2px 2px 0px 0px #fff;
+    --button-hover-bezel:
+  0 0 0 1px #aaa,
+  0 0 0 2px #ddd,
+  0 0 0 3px #000;
+    --font-family: 'ChicagoFLF', 'Times New Roman', 'Georgia', serif;
+  }
+  
+  body.classic-mode  {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    background-repeat: repeat;
+    margin: 0;
+    height: 100%;
+    font-size: 12px;
+    font-weight: normal;
+  }
+  
+  .classic-mode h1,
+  .classic-mode h2,
+  .classic-mode h3,
+  .classic-mode h4,
+  .classic-mode a  {
+    font-family: var(--font-family);
+  }
+  
+  .classic-mode button {
+    font-family: var(--font-family);
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+  }
+  

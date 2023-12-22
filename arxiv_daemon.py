@@ -42,13 +42,23 @@ if __name__ == "__main__":
     we've reached older papers that are already part of the database, to spare the arxiv API.
     """
 
-    # query string of papers to look for
+    # Categories we are intentionally not indexing atm 
     # IR = Information Retrieval
     # CL = Computation and Language
+
+    # query string of papers to look for
+    # CV = Computer Vision and Pattern Recognition
     # HC = HCI
     # CY = Computers and Society
-    # q = "cat:cs.IR+OR+cat:cs.CL+OR+cat:cs.HC+OR+cat:cs.CY"
-    q = "cat:cs.HC+OR+cat:cs.CY"
+    # MM = Multimedia
+    # OH = Other
+    # SD = Sound
+    # GR = Graphics
+    # DL = Digital Libraries
+    
+    # q = "cat:cs.IR+OR+cat:cs.CL+OR+cat:cs.HC+OR+cat:cs.CY+OR+cat:cs.MM+OR+cat:cs.SD"
+    # q = "cat:cs.HC+OR+cat:cs.CY"
+    q = "cat:cs.HC+OR+cat:cs.CY+OR+cat:cs.CV+OR+cat:cs.OH+OR+cat:cs.GR+OR+cat:cs.MM+OR+cat:cs.SD"
 
     pdb = get_papers_db(flag="c")
     mdb = get_metas_db(flag="c")

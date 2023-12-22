@@ -4,14 +4,31 @@
 {% endblock %}
 
 {% block content %}
-<div id="aboutwrap">
+<div id="aboutwrap content">
     <p>
-        A much lighter-weight arxiv-sanity from-scratch re-write. Periodically polls arxiv API for new papers. Then allows users to tag papers of interest, and recommends new papers for each tag based on SVMs over tfidf features of paper abstracts. Allows one to search, rank, sort, slice and dice these results in a pretty web UI. Lastly, arxiv-sanity-lite can send you daily emails with recommendations of new papers based on your tags. Curate your tags, track recent papers in your area, and don't miss out!
+        A much lighter-weight arxiv-sanity from-scratch re-write. Periodically polls arxiv API for new papers. Then
+        allows users to tag papers of interest, and recommends new papers for each tag based on SVMs over tfidf features
+        of paper abstracts. Allows one to search, rank, sort, slice and dice these results in a pretty web UI. Lastly,
+        arxiv-sanity-lite can send you daily emails with recommendations of new papers based on your tags. Curate your
+        tags, track recent papers in your area, and don't miss out!
     </p>
     <p>
-        This particular instance indexes papers from cs.CV, cs.LG, cs.CL, cs.AI, cs.NE, cs.RO
+        This particular instance indexes papers from the following categories:
+        <ul>
+            <li><a href="https://arxiv.org/list/cs.CV/recent">cs.CV - Computer Vision and Pattern Recognition</a></li>
+            <li><a href="https://arxiv.org/list/cs.HC/recent">cs.HC - Human-Computer Interaction</a></li>
+            <li><a href="https://arxiv.org/list/cs.CY/recent">cs.CY - Computers and Society</a></li>
+            <li><a href="https://arxiv.org/list/cs.MM/recent">cs.MM - Multimedia</a></li>
+            <li><a href="https://arxiv.org/list/cs.OH/recent">cs.OH - Other Computer Science</a></li>
+            <li><a href="https://arxiv.org/list/cs.SD/recent">cs.SD - Sound</a></li>
+            <li><a href="https://arxiv.org/list/cs.GR/recent">cs.GR - Graphics</a></li>
+            <li><a href="https://arxiv.org/list/cs.DL/recent">cs.DL - Digital Libraries</a></li>
+        </ul>
+
+        <p>To request other categories or sources, <a href="mailto:christopherbfrance+admin@gmail.com">contact the admin</a>.</p>
     </p>
-    <p>The code for this website is open source at Github under <a href="https://github.com/karpathy/arxiv-sanity-lite">arxiv-sanity-lite</a>.</p>
+    <p>The code for this website is open source at Github under <a
+            href="https://github.com/karpathy/arxiv-sanity-lite">arxiv-sanity-lite</a>.</p>
     <p>Developed in spare time as a labor of love by <a href="https://twitter.com/karpathy">@karpathy</a>.</p>
 </div>
 {% endblock %}

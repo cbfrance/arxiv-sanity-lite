@@ -1,0 +1,24 @@
+
+
+SENDGRID_API_KEY is set. Truncated version: SG.XM...
+
+
+Namespace(num_recommendations=12, time_delta=3, dry_run=0, user='', min_papers=1)
+Traceback (most recent call last):
+  File "/usr/local/src/arxiv-sanity-lite/send_emails.py", line 289, in <module>
+    pids, scores = calculate_recommendation(tags, time_delta=args.time_delta)
+  File "/usr/local/src/arxiv-sanity-lite/send_emails.py", line 116, in calculate_recommendation
+    y[ptoi[pid]] = 1.0
+KeyError: 'undefined'
+
+
+SENDGRID_API_KEY is set. Truncated version: SG.XM...
+
+
+Namespace(num_recommendations=12, time_delta=3, dry_run=0, user='', min_papers=1)
+Traceback (most recent call last):
+  File "/usr/local/src/arxiv-sanity-lite/send_emails.py", line 289, in <module>
+    pids, scores = calculate_recommendation(tags, time_delta=args.time_delta)
+  File "/usr/local/src/arxiv-sanity-lite/send_emails.py", line 116, in calculate_recommendation
+    y[ptoi[pid]] = 1.0
+KeyError: 'undefined'

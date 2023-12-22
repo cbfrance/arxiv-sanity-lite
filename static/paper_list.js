@@ -1,10 +1,15 @@
 'use strict';
 
+function noop() {
+    alert('This feature doesn\'t exist yet, but thank you for your interest. It has been noted.');
+    // log the click
+}
+
 const UTag = props => {
     const tag_name = props.tag;
     const turl = "/?rank=tags&tags=" + tag_name;
     return (
-        <div class='rel_utag'>
+        <div className='rel_utag'>
             <a href={turl}>
                 {tag_name}
             </a>
@@ -17,37 +22,57 @@ const Paper = props => {
 
     const adder = () => fetch("/add/" + p.id + "/" + prompt("tag to add to this paper:"))
         .then(response => console.log(response.text()));
-    const subber = () => fetch("/sub/" + p.id + "/" + prompt("tag to subtract from this paper:"))
-        .then(response => console.log(response.text()));
+    // const subber = () => fetch("/sub/" + p.id + "/" + prompt("tag to subtract from this paper:"))
+    //     .then(response => console.log(response.text()));
     const utags = p.utags.map((utxt, ix) => <UTag key={ix} tag={utxt} />);
     const similar_url = "/?rank=pid&pid=" + p.id;
     const inspect_url = "/inspect?pid=" + p.id;
-    const thumb_img = p.thumb_url === '' ? null : <div class='rel_img'><img src={p.thumb_url} /></div>;
+    const thumb_img = p.thumb_url === '' ? null : <div className='rel_img'><img src={p.thumb_url} /></div>;
     // if the user is logged in then we can show add/sub buttons
     let utag_controls = null;
-    if (user) {
+    if (window.user) {
         utag_controls = (
-            <div class='rel_utags'>
-                <div class="rel_utag rel_utag_add" onClick={adder}>+</div>
-                <div class="rel_utag rel_utag_sub" onClick={subber}>-</div>
+            <div className='rel_utags'>
+                <a className="rel_utag rel_utag_add" onClick={adder}>add a tag</a>
                 {utags}
             </div>
         )
     }
 
+    // Create a dotted gauge based on the normalized weight
+    const filledDots = "●".repeat(Math.round(p.normalized_weight.toFixed(2) / 10));
+    const emptyDots = "○".repeat(10 - filledDots.length);
+    const gauge = filledDots + emptyDots;
+
     return (
-        <div class='rel_paper'>
-            <div class="rel_score">{p.weight.toFixed(2)}</div>
-            <div class='rel_title'><a href={'http://arxiv.org/abs/' + p.id}>{p.title}</a></div>
-            <div class='rel_authors'>{p.authors}</div>
-            <div class="rel_time">{p.time}</div>
-            <div class='rel_tags'>{p.tags}</div>
+        <div className='rel_paper'>
+        {/* <div className='rel_paper' style={{opacity: p.normalized_weight.toFixed(2) + '%'}}> */}
+
+            <div className="rel_score">{p.normalized_weight.toFixed(2)}</div>            
+            <h4 className='rel_title'><a href={'http://arxiv.org/abs/' + p.id}>{p.title}</a></h4>
+            <div className='rel_gauge'>{gauge} relevance in this view</div>
+            <div className='rel_authors'>{p.authors}</div>
+            <div className="rel_time">{p.time}</div>
+            <div className='rel_tags'>{p.tags}</div>
             {utag_controls}
             {thumb_img}
-            <div class='rel_abs'>{p.summary}</div>
-            <div class='rel_more'><a href={similar_url}>similar</a></div>
-            <div class='rel_inspect'><a href={inspect_url}>inspect</a></div>
-        </div>
+            <div className='rel_abs'>{p.summary}</div>
+            <div className="row">
+                <div className='rel_more'><a href={similar_url}>similar</a></div>
+                <div className='rel_inspect'><a href={inspect_url}>inspect</a></div>
+                <a href="#" onClick={(e) => {
+                    e.preventDefault(); noop();
+                }}>
+                    save for later
+                </a>
+                <a href="#" onClick={(e) => {
+                    e.preventDefault(); noop();
+                }}>
+                    add to zotero
+                </a>
+                {/* <div className='add_to_zotero'><a href={add_to_zotero_url}>add to zotero</a></div> */}
+            </div>
+        </div >
     )
 }
 
@@ -56,7 +81,7 @@ const PaperList = props => {
     const plst = lst.map((jpaper, ix) => <Paper key={ix} paper={jpaper} />);
     return (
         <div>
-            <div id="paperList" class="rel_papers">
+            <div id="paperList" className="rel_papers col">
                 {plst}
             </div>
         </div>
@@ -68,7 +93,7 @@ const Tag = props => {
     const turl = "/?rank=tags&tags=" + t.name;
     const tag_class = 'rel_utag' + (t.name === 'all' ? ' rel_utag_all' : '');
     return (
-        <div class={tag_class}>
+        <div className={tag_class}>
             <a href={turl}>
                 {t.n} {t.name}
             </a>
@@ -86,8 +111,8 @@ const TagList = props => {
     const inspect_elt = words.length > 0 ? <div id="inspect_svm" onClick={show_inspect}>inspect</div> : null;
     return (
         <div>
-            <div class="rel_tag" onClick={deleter}>-</div>
-            <div id="tagList" class="rel_utags">
+            <div className="rel_tag" onClick={deleter}>-</div>
+            <div id="tagList" className="rel_utags">
                 {tlst}
             </div>
             {inspect_elt}

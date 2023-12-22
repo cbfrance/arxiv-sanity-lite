@@ -6,12 +6,11 @@
   "scripts": {
     "cy:open": "npx cypress open",
     "cy:run": "npx cypress run --record --key 22d0cd56-3dc9-4a42-874e-262e4d3683a",
-    "serve": "poetry run flask run",
+    "serve": ".venv/bin/python -m flask run",
     "start": "nodemon --exec poetry run gunicorn serve:app --ext py,html",
-    "serve-prod-wip": "poetry run gunicorn serve:app",
-    "arxiv-daemon": "poetry run python3 arxiv_daemon.py",
-    "compute-tfidf": "poetry run python3 compute.py",
-    "thumb-daemon": "poetry run python3 thumb_daemon.py",
-    "run-all": "npm run arxiv-daemon && npm run computer-tfidf && npm run thumb-daemon"
+    "serve-prod-wip": ".venv/bin/python -m gunicorn serve:app",
+    "1-arxiv-daemon": ".venv/bin/python arxiv_daemon.py",
+    "2-compute-tfidf": ".venv/bin/python compute_tfidf.py",
+    "3-thumb-daemon": ".venv/bin/python  thumb_daemon.py"
   }
 }

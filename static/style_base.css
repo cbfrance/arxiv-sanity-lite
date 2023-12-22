@@ -1,21 +1,23 @@
 :root {
   --color-primary: #000000;
-  --color-text-inverted: #ffffff;
-  --color-header-bg: #840000;
-  --color-header-border: #622;
-  --color-controls-bg: #eee;
-  --color-card-bg: #ffffff;
-  --color-secondary-bg: #ffffff;
-  --color-secondary: #009;
-  --color-accent-1: #050;
-  --color-accent-2: #333;
-  --color-danger: #f55;
-  --color-bg-2: #909;
-  --color-bg-3: #55f;
 }
 
 body {
   margin: 0;
   padding: 0;
   background-color: #eee;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  line-height: 1.6;
+  font-size: 11px;
 }
+
+a {
+  cursor: pointer;
+}
+
+.rel_title {
+  font-weight: 800;
+}
+
+

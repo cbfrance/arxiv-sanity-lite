@@ -26,6 +26,17 @@ from aslite.db import get_metas_db
 from aslite.db import get_papers_db
 from aslite.db import get_email_db
 
+# Load the API key
+from dotenv import load_dotenv
+load_dotenv()
+
+if not os.getenv('SENDGRID_API_KEY'):
+    raise ValueError("\n\nSENDGRID_API_KEY is not set. Please set it in your environment variables.\n\n")
+else:
+    print("\n\nSENDGRID_API_KEY is set. Truncated version: {}...\n\n".format(os.getenv('SENDGRID_API_KEY')[:5]))
+
+
+
 # -----------------------------------------------------------------------------
 # the html template for the email
 
@@ -60,7 +71,12 @@ body {
 <body>
 
 <br><br>
-<div>Hi! Here are your <a href="https://arxiv-sanity-lite.com">arxiv-sanity-lite</a> recommendations. __STATS__</div>
+<div>Site updates: 50k articles indexed now! With expanded arxiv categories. The site has been refreshed to use almost zero CSS. Now back to mostly server-side rendering to ensure the fastest possible experience. Instructions are a little clearer, I added a small unicode data visualiation, and now you can almost tell what is going on. Ranking is less buggy. 100 pages are displayed by default now. Images are currently hidden, do they seem important to you? Feedback welcome. </div>
+<div>PS: Be sure to check out <a href="http://74.50.48.118/profile">Classic mode</a>!</div>
+<br><br>
+
+<br><br>
+<div>Here are your arxiv-sanity-lite recommendations. __STATS__</div>
 <br><br>
 
 <div>
@@ -69,7 +85,7 @@ body {
 
 <br><br>
 <div>
-To stop these emails remove your email in your <a href="https://arxiv-sanity-lite.com/profile">account</a> settings. (your account is __ACCOUNT__).
+To stop these emails remove your email in your <a href="http://74.50.48.118/profile">account</a> settings. (your account is __ACCOUNT__).
 </div>
 <div> <3, arxiv-sanity-lite. </div>
 
@@ -105,7 +121,9 @@ def calculate_recommendation(
             y[ptoi[pid]] = 1.0
 
         # classify
-        clf = svm.LinearSVC(class_weight='balanced', verbose=False, max_iter=10000, tol=1e-6, C=0.01)
+        n_samples, n_features = x.shape
+        dual = n_samples <= n_features
+        clf = svm.LinearSVC(class_weight='balanced', verbose=False, max_iter=10000, tol=1e-6, C=0.01, dual=dual)
         clf.fit(x, y)
         s = clf.decision_function(x)
         sortix = np.argsort(-s)
@@ -159,7 +177,7 @@ def render_recommendations(user, tags, tag_pids, tag_scores):
         if len(summary) == 500:
             summary += '...'
         # create the url that will feature this paper on top and also show the most similar papers
-        url = 'https://arxiv-sanity-lite.com/?rank=pid&pid=' + pid
+        url = 'http://74.50.48.118/?rank=pid&pid=' + pid
         parts.append(
 """
 <tr>
@@ -200,13 +218,11 @@ def render_recommendations(user, tags, tag_pids, tag_scores):
 
 def send_email(to, html):
 
-    # init the api
-    assert os.path.isfile('sendgrid_api_key.txt')
-    api_key = open('sendgrid_api_key.txt', 'r').read().strip()
+    api_key = os.getenv('SENDGRID_API_KEY')
     sg = sendgrid.SendGridAPIClient(api_key=api_key)
 
     # construct the email
-    from_email = Email("admin@arxiv-sanity-lite.com")
+    from_email = Email("christopher@thedataguild.com")
     to_email = To(to)
     subject = tnow_str + " Arxiv Sanity Lite recommendations"
     content = Content("text/html", html)
@@ -223,7 +239,7 @@ def send_email(to, html):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Sends emails with recommendations')
-    parser.add_argument('-n', '--num-recommendations', type=int, default=20, help='number of recommendations to send per person')
+    parser.add_argument('-n', '--num-recommendations', type=int, default=12, help='number of recommendations to send per person')
     parser.add_argument('-t', '--time-delta', type=int, default=3, help='how recent papers to recommended, in days')
     parser.add_argument('-d', '--dry-run', type=int, default=0, help='if set to 1 do not actually send the emails')
     parser.add_argument('-u', '--user', type=str, default='', help='restrict recommendations only to a single given user (used for debugging)')

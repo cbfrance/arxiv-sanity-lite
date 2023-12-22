@@ -1,5 +1,5 @@
 {
-  "workbench.colorTheme": "Kimbie Dark",
+  "workbench.colorTheme": "Monokai Dimmed",
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter"
   },

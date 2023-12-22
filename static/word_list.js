@@ -1,23 +1,23 @@
 'use strict';
 
 const Word = props => {
-    const p = props.word;
+    const word = props.word;
     // word, weight, idf
     const containerStyle = {
         position: 'relative'
     };
     const barStyle = {
-        width: `${p.weight * 100}%`,
+        width: `${word.weight * 100}%`,
         backgroundColor: 'rgba(0,0,0,0.1)',
         height: '100%',
         position: 'absolute'
     };
     return (
-        <div style={containerStyle} class='rel_word'>
+        <div style={containerStyle} className='rel_word'>
             <div style={barStyle}></div>
-            {/* @TODO: on the paper list view, p.idf is undefined. @cbfrance 2023-Sept-9 */}
-            {/* <div class='rel_word_idf'>{p.idf.toFixed(2)}</div> */}
-            <div class="rel_word_txt">{p.word}</div>
+            {/* @TODO: on the paper list view, word.idf is undefined. @cbfrance 2023-Sept-9 */}
+            <div className='rel_word_idf'>{word.idf ? word.idf.toFixed(2) : ""}</div>
+            <div className="rel_word_txt">{word.word}</div>
         </div>
     )
 }
@@ -30,7 +30,7 @@ const WordList = props => {
     return (
         <div>
             <div>{words_desc}</div>
-            <div id="wordList" class="rel_words">
+            <div id="wordList" className="rel_words">
                 {wlst}
             </div>
         </div>

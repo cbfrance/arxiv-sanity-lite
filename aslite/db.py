@@ -5,19 +5,33 @@ Any of the file system I/O and the associated settings are in this single file.
 """
 
 import os
+import platform
+import pwd
+import grp
 import sqlite3, zlib, pickle, tempfile
 from sqlitedict import SqliteDict
 from contextlib import contextmanager
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, "../data")
+
+
 # -----------------------------------------------------------------------------
 # global configuration
 
-DATA_DIR = "data"
-
 # -----------------------------------------------------------------------------
+# Permissions utility that can be called in other functions
+# For ensuring correct Apache permissions on deployment
+def change_file_permissions():
+    if platform.system() == 'Linux':
+        uid = pwd.getpwnam('www-data').pw_uid
+        gid = grp.getgrnam('www-data').gr_gid
+        os.chown(FEATURES_FILE, uid, gid)
+        os.chown(PAPERS_DB_FILE, uid, gid)
+        os.chown(DICT_DB_FILE, uid, gid)
+
+
 # utilities for safe writing of a pickle file
-
-
 # Context managers for atomic writes courtesy of
 # http://stackoverflow.com/questions/2333872/atomic-writing-to-file-with-python
 @contextmanager
@@ -81,8 +95,6 @@ def safe_pickle_dump(obj, fname):
 
 
 # -----------------------------------------------------------------------------
-
-
 class CompressedSqliteDict(SqliteDict):
     """overrides the encode/decode methods to use zlib, so we get compressed storage"""
 
@@ -111,7 +123,7 @@ PAPERS_DB_FILE = os.path.join(DATA_DIR, "papers.db")
 DICT_DB_FILE = os.path.join(DATA_DIR, "dict.db")
 
 
-def get_papers_db(flag="r", autocommit=True):
+def get_papers_db(flag="c", autocommit=True):
     assert flag in ["r", "c"]
     pdb = CompressedSqliteDict(
         PAPERS_DB_FILE, tablename="papers", flag=flag, autocommit=autocommit
@@ -119,7 +131,7 @@ def get_papers_db(flag="r", autocommit=True):
     return pdb
 
 
-def get_metas_db(flag="r", autocommit=True):
+def get_metas_db(flag="c", autocommit=True):
     assert flag in ["r", "c"]
     mdb = SqliteDict(
         PAPERS_DB_FILE, tablename="metas", flag=flag, autocommit=autocommit
@@ -135,7 +147,7 @@ def get_tags_db(flag="c", autocommit=True):
     return tdb
 
 
-def get_last_active_db(flag="r", autocommit=True):
+def get_last_active_db(flag="c", autocommit=True):
     assert flag in ["r", "c"]
     ladb = SqliteDict(
         DICT_DB_FILE, tablename="last_active", flag=flag, autocommit=autocommit
@@ -161,6 +173,7 @@ FEATURES_FILE = os.path.join(DATA_DIR, "features.p")
 def save_features(features):
     """takes the features dict and save it to disk in a simple pickle file"""
     safe_pickle_dump(features, FEATURES_FILE)
+    change_file_permissions()
 
 
 def load_features():

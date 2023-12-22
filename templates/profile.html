@@ -8,11 +8,35 @@
 
     {% if user %}
     <div>
+
+        <div><b>Current session</b></div>
+        <div>Logged in user: {{ user }}</div>
         <div>
-            <div><b>Current session</b></div>
-            <div>Logged in user: {{ user }}</div>
+            <label for="classic-mode">Classic Mode:</label>
+            <input type="checkbox" id="classic-mode" name="classic-mode" onclick="toggleClassicMode(this)">
+            <script>
+                function toggleClassicMode(checkbox) {
+                    localStorage.setItem('classic-mode', checkbox.checked);
+                    if (checkbox.checked) {
+                        document.body.classList.add('classic-mode');
+                        new Toast("Classic mode enabled!");
+                    } else {
+                        document.body.classList.remove('classic-mode');
+                        new Toast("Classic mode disabled!");
+                    }
+                }
+
+                // Set initial state of checkbox and body class based on local storage
+                var isClassicMode = localStorage.getItem('classic-mode') === 'true';
+                document.getElementById('classic-mode').checked = isClassicMode;
+                if (isClassicMode) {
+                    document.body.classList.add('classic-mode');
+                } else {
+                    document.body.classList.remove('classic-mode');
+                }
+            </script>
         </div>
-        <br>
+        
         <div>
             <div><b>Email recommendations</b></div>
             <div>

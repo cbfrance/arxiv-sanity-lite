@@ -6,7 +6,7 @@ const PaperLite = props => {
 
     return (
         <div class='rel_paper'>
-            <div class='rel_title'><a href={'http://arxiv.org/abs/' + p.id}>{p.title}</a></div>
+            <div class='rel_title'><a href={'http://arxiv.org/abs/' + p.id}><h4>{p.title}</h4></a></div>
             <div class='rel_authors'>{p.authors}</div>
             <div class="rel_time">{p.time}</div>
             <div class='rel_tags'>{p.tags}</div>

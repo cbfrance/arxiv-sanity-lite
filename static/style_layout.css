@@ -1,116 +1,27 @@
-#header {
-  background-color: var(--color-header-bg);
-  color: white;
-  border-bottom: 1px solid var(--color-header-border);
-  display: flex;
+body {
+    padding: 1rem;
 }
 
-#header > a {
-  margin: 0.5rem;
+/* =========================================== */
+/* Papers */
+/* =========================================== */
+.rel_papers {
+    gap: 2rem;
 }
 
-#controls {
-  margin: 0.5rem 2.5rem 0 2.5rem;
-  background-color: var(--color-controls-bg);
+
+/* =========================================== */
+/* Rows and columns */
+/* =========================================== */
+.row, .col {
+    display: flex;
+    gap: 1rem;
 }
 
-#wrap {
-  margin: 0.5rem 2.5rem 0 2.5rem;
-}
-
-#tagwrap {
-  margin: 0.5rem 2.5rem 0 2.5rem;
-}
-
-#wordwrap {
-  margin: 0.5rem 2.5rem 0 2.5rem;
-}
-
-#statswrap {
-  margin: 0.5rem 2.5rem 0 2.5rem;
-}
-
-#profilewrap {
-  margin: 0.5rem 2.5rem 0 2.5rem;
-}
-
-#aboutwrap {
-  margin: 0.5rem 2.5rem 0 2.5rem;
-}
-
-#tags_field {
-  width: 12rem;
-}
-
-#pid_field {
-  width: 8rem;
-}
-
-#time_filter_field {
-  width: 3rem;
-}
-
-#page_number_field {
-  width: 3rem;
-}
-
-#svm_c_field {
-  width: 4rem;
-}
-
-#tagList {
-  display: inline-block;
-}
-
-#inspect_svm {
-  display: inline-block;
-  cursor: pointer;
-  text-decoration: underline;
-  color: var(--color-secondary);
-}
-
-@media only screen and (max-width: 720px) {
-  #controls,
-  #wrap,
-  #profilewrap,
-  #wordwrap,
-  #aboutwrap,
-  #statswrap {
-    margin: 0.5rem 3rem 0 3rem;
-  }
-}
-
-#pagination {
-  text-align: center;
-  margin-bottom: 3rem;
-}
-
-#link-prev-page,
-#link-next-page {
-  cursor: pointer;
-  margin: 0 0.5rem 0 0.5rem;
-  color: var(--color-secondary);
-  text-decoration: underline;
-}
-
-.rel_paper {
-  overflow: hidden;
-}
-
-.rel_img img {
-  height: auto;
-  max-height: 200px;
-  object-fit: contain;
-}
-
-/* Layout utilities */
 .row {
-  display: flex;
-  flex-direction: row;
+    flex-direction: row;
 }
 
 .col {
-  display: flex-item;
-  display: flex;
-  flex-direction: column;
+    flex-direction: column;
 }

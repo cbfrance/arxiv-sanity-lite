@@ -1,19 +1,17 @@
-# arxiv-sanity-lite
+# Arxiv-sanity-lite
 
-Todos to consider:
+A research assistant, perhaps. 
 
-- /visual endpoint that has image focus
-- improve the speed of the image script, thumb_daemon.py
-- improve the organization of the scripts, clarify which is run when
-- explore hosting
+[![arxiv-sanity-lite](https://img.shields.io/badge/Using-Arxiv%20Sanity%20Lite-blue?style=flat-square&logo=github)](https://github.com/karpathy/arxiv-sanity-lite).
+
+For educational purposes only. 
+
+- python jinja + react 
+- cypress e2e testing
+- cron / polling based architecture which maintains a cache of pdf abstracts and thumbnails
+- TF-IDF
 
 ---
-
-A much lighter-weight arxiv-sanity from-scratch re-write. Periodically polls arxiv API for new papers. Then allows users to tag papers of interest, and recommends new papers for each tag based on SVMs over tfidf features of paper abstracts. Allows one to search, rank, sort, slice and dice these results in a pretty web UI. Lastly, arxiv-sanity-lite can send you daily emails with recommendations of new papers based on your tags. Curate your tags, track recent papers in your area, and don't miss out!
-
-I am running a live version of this code on [arxiv-sanity-lite.com](https://arxiv-sanity-lite.com).
-
-![Screenshot](screenshot.jpg)
 
 #### Overview
 
@@ -34,7 +32,7 @@ fi
 
 You can see that updating the database is a matter of first downloading the new papers via the arxiv api using `arxiv_daemon.py`, and then running `compute.py` to compute the tfidf features of the papers.
 
-All of the database will be stored inside the `data` directory.
+All of the databases are stored inside the `data` directory, using sqlite.
 
 #### Hosting
 
@@ -52,40 +50,40 @@ pip install -r requirements.txt
 
 #### Usage
 
-To serve the flask server locally with poetry:
+To serve the flask server locally:
 
 ```bash
-export FLASK_APP=serve.py; flask run
+source .venv/bin/activate
+python
 ```
 
-#### Usage with poetry and NPM scripts
+To run python scripts from the command line:
 
-Or you can use `npm run serve`, you'll need to take a few steps to ensure the pyenv / poetry environment is setup.
+```bash
+source .venv/bin/activate
+python script_name.py
+```
 
-optionally: `pyenv local 3.11` or similar
+Replace `script_name.py` with the name of the script you want to run.
 
-Install with poetry `poetry install`
+### Troubleshooting development
 
-Link poetry and pyenv: `poetry env use $(pyenv which python3)`
+- You might need to install imagemagick. On MacOS: `brew install imagemagick`
+- Locally can't get the site to render: You might need to turn off airplay reciever on your mac to get the server to run. On macOS, try disabling the 'AirPlay Receiver' service from System Preferences -> General -> AirDrop & Handoff.
 
-Activate poetry environment linked to correct python hopefully:
-
-`poetry shell`
-
-Run poetry via NPM script:
-
-`npm run serve`
-
-### Troubleshooting
-
-You might need to turn off airplay reciever on your mac to get the server to run.
-
-`On macOS, try disabling the 'AirPlay Receiver' service from System Preferences -> General -> AirDrop & Handoff.`
+### Troubleshooting deployment of Flask apps
+- Apache gunicorn/wsgi environment issue: Something is broken in the Flask/Jinja template? You can remotely edit some application code and `touch arxiv-sanity-lite.wsgi` to restart the server. You might need to also restart apache to see the changes with `apache2ctl restart`. Hey at least there is no Docker.
+- Edited `serve.py`? Touch the wsgi file to reload it. 
+- Missing database? Create the file and give it permissions, for example, for the dict database: `touch data/dict.db && chown www-data:www-data data/dict.db && chmod 664 data/dict.db` — see aslite/db.py for more details.
+- DB permissions errors? `chmod +r data/features.p` (or other sqlite DBs)
+- Check for errors `tail -f /var/log/apache2/error.log`
+- Sending email: you need to ensure the project dir (eg. `/usr/local/src/arxiv-sanity-lite`) is correct, like this: 
+    0 16 * * * TZ=":America/Los_Angeles" /usr/local/src/arxiv-sanity-lite/.venv/bin/python3 send_emails.py >> /usr/local/src/arxiv-sanity-lite/cron.log 2>&1
+- Installing cypress: `sudo apt-get update && sudo apt-get install -y libgbm-dev && sudo apt install xvfb && sudo apt-get install -y libasound2` 
+- Installing Node 14+ for cypress: `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+source ~/.bashrc && nvm install 14.0.0 && nvm use 14.0.0`
+-  Getting older articles: Offset your start index like this: `python arxiv_daemon.py --num 20000 --start 20100`
 
 #### License
 
 MIT
-
-```
-
-```

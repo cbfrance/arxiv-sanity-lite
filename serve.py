@@ -2,9 +2,9 @@
 Flask server backend
 
 ideas:
-- allow delete of tags
-- unify all different pages into single search filter sort interface
-- special single-image search just for paper similarity
+- [ ] allow delete of tags
+- [ ] unify all different pages into single search filter sort interface
+- [ ] special single-image search just for paper similarity
 """
 
 import os
@@ -266,19 +266,37 @@ def main_handler():
         C = float(opt_svm_c)
     except ValueError:
         C = 0.01  # sensible default, i think
-
+    
     # rank papers: by tags, by time, by random
     words = []  # only populated in the case of svm rank
-    if opt_rank == "search":
-        pids, scores = search_rank(q=opt_q)
-    elif opt_rank == "tags":
+    rank_description = ''  # description of the current ranking method
+
+    if opt_rank == "tags":
         pids, scores, words = svm_rank(tags=opt_tags, C=C)
+        rank_description = '''
+        Papers are ranked based on their relevance to the selected tags. 
+        An SVM (Support Vector Machine) model is trained where the positive examples are the papers with the selected tags. 
+        The model then ranks the papers based on their distance from the decision boundary, with papers closer to the boundary of the positive class ranked higher.
+        '''
     elif opt_rank == "pid":
         pids, scores, words = svm_rank(pid=opt_pid, C=C)
+        rank_description = '''
+        Papers are ranked based on their similarity to the selected paper. 
+        An SVM model is trained where the positive example is the selected paper. 
+        The model then ranks the papers based on their distance from the decision boundary, with papers closer to the boundary of the positive class (i.e., more similar to the selected paper) ranked higher.
+        '''
     elif opt_rank == "time":
         pids, scores = time_rank()
+        rank_description = '''
+        Papers are ranked based on their age. 
+        The weight represents the age of the paper in days. 
+        '''
     elif opt_rank == "random":
         pids, scores = random_rank()
+        rank_description = '''
+        Papers are ranked randomly. 
+        Explore the papers without any specific preference or bias.
+        '''
     else:
         raise ValueError("opt_rank %s is not a thing" % (opt_rank,))
 
@@ -300,18 +318,35 @@ def main_handler():
         keep = [i for i, pid in enumerate(pids) if pid not in have]
         pids, scores = [pids[i] for i in keep], [scores[i] for i in keep]
 
+    # normalize scores if they exist
+    # for charts
+    # not used for any tfidf calculation, only UI display logic
+    if scores:  
+        min_score = min(scores)
+        max_score = max(scores)
+        # avoid division by zero
+        if max_score - min_score != 0:
+            normalized_scores = [(score - min_score) / (max_score - min_score) * 100 for score in scores]
+        else:
+            normalized_scores = [0 for score in scores]
+
     # crop the number of results to RET_NUM, and paginate
     try:
         page_number = max(1, int(opt_page_number))
     except ValueError:
         page_number = 1
+
     start_index = (page_number - 1) * RET_NUM  # desired starting index
     end_index = min(start_index + RET_NUM, len(pids))  # desired ending index
-    pids = pids[start_index:end_index]
-    scores = scores[start_index:end_index]
+    pids_for_page = pids[start_index:end_index]
+    normalized_scores_for_page = normalized_scores[start_index:end_index]
 
     # render all papers to just the information we need for the UI
-    papers = [render_pid(pid) for pid in pids]
+    papers = [render_pid(pid) for pid in pids_for_page]
+
+    for i, p in enumerate(papers):
+        p["normalized_weight"] = float(normalized_scores_for_page[i])
+
     for i, p in enumerate(papers):
         p["weight"] = float(scores[i])
 
@@ -326,6 +361,7 @@ def main_handler():
     context["papers"] = papers
     context["tags"] = rtags
     context["words"] = words
+    context["rank_description"] = rank_description 
     context[
         "words_desc"
     ] = "Here are the top 40 most positive and bottom 20 most negative weights of the SVM. If they don't look great then try tuning the regularization strength hyperparameter of the SVM, svm_c, above. Lower C is higher regularization."
@@ -345,13 +381,6 @@ def main_handler():
 def main():
     context = main_handler()
     return render_template("index.html", debug=app.config["DEBUG"], **context)
-
-
-@app.route("/visual", methods=["GET"])
-def visual():
-    context = main_handler()
-    return render_template("visual.html", debug=app.config["DEBUG"], **context)
-
 
 @app.route("/inspect", methods=["GET"])
 def inspect():
@@ -421,11 +450,6 @@ def stats():
     tnow = time.time()
     for thr in [1, 6, 12, 24, 48, 72, 96]:
         context["thr_%d" % thr] = len([t for t in times if t > tnow - thr * 60 * 60])
-
-    # embeddings = np.random.rand(100, 256)
-    # print(embeddings)
-    # print(type(embeddings))
-    # context["atlas"] = atlas.map_embeddings(embeddings=embeddings)
 
     return render_template("stats.html", **context)
 
