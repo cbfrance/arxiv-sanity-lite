@@ -94,8 +94,8 @@ const Tag = props => {
     const tag_class = 'rel_utag' + (t.name === 'all' ? ' rel_utag_all' : '');
     return (
         <div className={tag_class}>
-            <a href={turl}>
-                {t.n} {t.name}
+            <a href={turl} title={t.n} >
+                {t.name}
             </a>
         </div>
     )
@@ -108,14 +108,18 @@ const TagList = props => {
         .then(response => console.log(response.text()));
     // show the #wordwrap element if the user clicks inspect
     const show_inspect = () => { document.getElementById("wordwrap").style.display = "block"; };
-    const inspect_elt = words.length > 0 ? <div id="inspect_svm" onClick={show_inspect}>inspect</div> : null;
+    const inspect_elt = words.length > 0 ? <button id="inspect_svm" onClick={show_inspect}>inspect svm</button> : null;
     return (
         <div>
-            <div className="rel_tag" onClick={deleter}>-</div>
-            <div id="tagList" className="rel_utags">
+            
+            <p>Your tags</p>
+            <div id="tagList" className="rel_utags" style={{display: "flex", gap: "0.3rem", flexWrap: "wrap"}}>
                 {tlst}
             </div>
-            {inspect_elt}
+            <div className="row">
+                {inspect_elt}
+                <button className="rel_tag" onClick={deleter}>delete tag</button>
+            </div>
         </div>
     )
 }

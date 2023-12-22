@@ -1,0 +1,63 @@
+<div id="cbox" class="col">
+            <form action="/" method="get" class="col">
+
+                <!-- the search box, allowing us to search by keywords -->
+                <input style="max-width: 300px;" name="q" type="text" id="qfield" value="{{ gvars.search_query }}">
+                <!-- current tags, simply in a text field -->
+                <label for="tags">tags: </label>
+                <input name="tags" type="text" id="tags_field" value="{{ gvars.tags }}">
+
+                <div class="row">
+                    <div>
+                        <!-- rank type: one of tags, pid, time, or random -->
+                        {# Hidden because it's not necessary @cbfrance #}
+                        <label for="rank_type">Rank by:</label>
+                        <select name="rank" id="rank_select">
+                            <option value="search" {{ gvars.rank=='search' and 'selected' }}>search</option>
+                            <option value="tags" {{ gvars.rank=='tags' and 'selected' }}>tags</option>
+                            <option value="pid" {{ gvars.rank=='pid' and 'selected' }}>pid</option>
+                            <option value="time" {{ gvars.rank=='time' and 'selected' }}>time</option>
+                            <option value="random" {{ gvars.rank=='random' and 'selected' }}>random</option>
+                        </select>
+                    </div>
+                    <div>
+                        <!-- current tags, simply in a text field -->
+                        <label for="tags">tags: </label>
+                        <input name="tags" type="text" id="tags_field" value="{{ gvars.tags }}">
+                    </div>
+                    <div>
+                        <!-- current pid, simply in a text field -->
+                        <label for="pid">pid: </label>
+                        <input name="pid" type="text" id="pid_field" value="{{ gvars.pid }}">
+                    </div>
+                    <div>
+                        <!-- current time_filter, in a text field -->
+                        <label for="time_filter">time_filter (days): </label>
+                        <input name="time_filter" type="text" id="time_filter_field" value="{{ gvars.time_filter }}">
+                    </div>
+                    <div>
+                        <!-- current svm_c, in a text field -->
+                        <label for="svm_c">svm_c: </label>
+                        <input name="svm_c" type="text" id="svm_c_field" value="{{ gvars.svm_c }}">
+                    </div>
+                    <div>
+                        <!-- current skip_have: one of yes or no -->
+                        <label for="skip_have">skip_have: </label>
+                        <select name="skip_have" id="skip_have_select">
+                            <option value="yes" {{ gvars.skip_have=='yes' and 'selected' }}>yes</option>
+                            <option value="no" {{ gvars.skip_have=='no' and 'selected' }}>no</option>
+                        </select>
+                    </div>
+
+                    <input type="submit" value="Submit">
+                </div>
+            </form>
+        </div>
+
+
+        {# <!-- some hand-coded common choices for faster and more convenient operation -->
+        <div id="cbox_fast" class="row">
+            <a href="/?rank=tags&tags=all&time_filter=7&skip_have=yes">This week for you</a>
+            {# <a href="/?rank=time">All recent</a>
+            <a href="/?rank=random&time_filter=7">random last week</a> #}
+        </div> #}

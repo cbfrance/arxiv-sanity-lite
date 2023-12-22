@@ -6,3 +6,6 @@ data
 secret_key.txt
 static/thumb
 tmp
+.env
+node_modules
+*.log

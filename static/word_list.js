@@ -28,7 +28,7 @@ const WordList = props => {
     const sortedList = lst.sort((a, b) => b.weight - a.weight);
     const wlst = sortedList.map((jword, ix) => <Word key={ix} word={jword} />);
     return (
-        <div>
+        <div style={{maxWidth: 500}}>
             <div>{words_desc}</div>
             <div id="wordList" className="rel_words">
                 {wlst}

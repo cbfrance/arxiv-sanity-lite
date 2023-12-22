@@ -194,7 +194,18 @@ def svm_rank(tags: str = "", pid: str = "", C: float = 0.01):
             }
         )
 
-    return pids, scores, words
+    # Get the words that score most positively 
+    # These can be used to suggest tags
+    all_top_words = []
+    for ix in list(sortix[:100]):
+        all_top_words.append(
+            {
+                "word": ivocab[ix],
+                "weight": weights[ix],
+            }
+        )
+
+    return pids, scores, words, all_top_words
 
 
 def search_rank(q: str = ""):
@@ -272,14 +283,14 @@ def main_handler():
     rank_description = ''  # description of the current ranking method
 
     if opt_rank == "tags":
-        pids, scores, words = svm_rank(tags=opt_tags, C=C)
+        pids, scores, words, all_top_words = svm_rank(tags=opt_tags, C=C)
         rank_description = '''
         Papers are ranked based on their relevance to the selected tags. 
         An SVM (Support Vector Machine) model is trained where the positive examples are the papers with the selected tags. 
         The model then ranks the papers based on their distance from the decision boundary, with papers closer to the boundary of the positive class ranked higher.
         '''
     elif opt_rank == "pid":
-        pids, scores, words = svm_rank(pid=opt_pid, C=C)
+        pids, scores, words, all_top_words = svm_rank(pid=opt_pid, C=C)
         rank_description = '''
         Papers are ranked based on their similarity to the selected paper. 
         An SVM model is trained where the positive example is the selected paper. 
@@ -339,7 +350,9 @@ def main_handler():
     start_index = (page_number - 1) * RET_NUM  # desired starting index
     end_index = min(start_index + RET_NUM, len(pids))  # desired ending index
     pids_for_page = pids[start_index:end_index]
-    normalized_scores_for_page = normalized_scores[start_index:end_index]
+
+    if scores:  
+        normalized_scores_for_page = normalized_scores[start_index:end_index]
 
     # render all papers to just the information we need for the UI
     papers = [render_pid(pid) for pid in pids_for_page]
@@ -361,6 +374,7 @@ def main_handler():
     context["papers"] = papers
     context["tags"] = rtags
     context["words"] = words
+    context["all_top_words"] = all_top_words
     context["rank_description"] = rank_description 
     context[
         "words_desc"
@@ -589,3 +603,20 @@ def register_email():
                 edb[g.user] = email
 
     return redirect(url_for("profile"))
+
+
+
+# -----------------------------------------------------------------------------
+# user tags endpoint for fetch
+# (In addition to the Flask template render in get_tags above)
+
+
+
+@app.route("/get_user_tags")
+def get_user_tags():
+    if g.user is None:
+        return jsonify({"error": "User not logged in"}), 401
+
+    with get_tags_db() as tags_db:
+        tags_dict = tags_db[g.user] if g.user in tags_db else {}
+    return jsonify(tags_dict)
