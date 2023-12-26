@@ -1,10 +1,9 @@
 # Arxiv-sanity-lite
 
-A research assistant, perhaps. 
+[![arxiv-sanity-lite](https://img.shields.io/badge/Arxiv%20Sanity%20Lite-blue?style=flat-square&logo=github)](https://github.com/karpathy/arxiv-sanity-lite).
 
-[![arxiv-sanity-lite](https://img.shields.io/badge/Using-Arxiv%20Sanity%20Lite-blue?style=flat-square&logo=github)](https://github.com/karpathy/arxiv-sanity-lite).
+This is a fork of arxiv-sanity-lite, which is an aggregator for discovering articles on Arxiv. For educational purposes only.
 
-For educational purposes only. 
 
 - python jinja + react 
 - cypress e2e testing
