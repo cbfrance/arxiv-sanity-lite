@@ -12,13 +12,9 @@
 
     console.log("ALL TERMS")
     console.log(all_terms)
-    console.log("WORDS DESC")
     console.log(words_desc)
-    console.log("GVARS")
     console.log(gvars)
-    console.log("WORDS")
     console.log(words)
-    console.log("PAPERS")
     console.log(papers)
 
     var debugObject = gvars
@@ -32,6 +28,75 @@
         window.location.href = '/?' + queryParams.toString();
     }
 </script>
+
+<style>
+    #three-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r73/three.min.js"></script>
+<script>
+window.onload = function() {
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    var renderer = new THREE.WebGLRenderer();
+    renderer.domElement.id = 'three-canvas';
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    var geometry = new THREE.Geometry();
+    for (i = 0; i < 20000; i++) {
+        var vertex = new THREE.Vector3();
+        vertex.x = Math.random()*2000-1000;
+        vertex.y = Math.random()*2000-1000;
+        vertex.z = Math.random()*2000-1000;
+        geometry.vertices.push(vertex);
+    }    
+
+    material = new THREE.PointsMaterial({size: 3, sizeAttenuation: false});
+    particles = new THREE.Points(geometry, material);
+    scene.add(particles);
+
+    camera.position.z = 1000;
+
+    function animate() {
+        requestAnimationFrame(animate);
+        particles.rotation.x += 0.001;
+        particles.rotation.y -= 0.004;
+        renderer.render(scene, camera);
+    }
+    animate();
+
+    // Set the renderer's size to the window's inner width and height
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    // Append the renderer's DOM element to the body
+    document.body.appendChild(renderer.domElement);
+
+    // Add an event listener for the window resize event
+    window.addEventListener('resize', function() {
+        // Update the renderer's size
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        // Update the camera's aspect ratio
+        camera.aspect = window.innerWidth / window.innerHeight;
+
+        // Update the camera's projection matrix
+        camera.updateProjectionMatrix();
+    });
+}
+</script>
+
+
+
+
+
+
 {% endblock %}
 
 {% block content %}
@@ -39,11 +104,10 @@
 {% if debug %}
   <mark>Application is running in debug mode</mark>
   <div id="debugger" ></div>
-  
 {% endif %}
 
 {% if not user %}
-<div id="log-fun-warn" class="outline">(hi! just btw you have to be logged in to be able to add/delete/curate tags for papers and get
+<div id="log-fun-warn">(hi! just btw you have to be logged in to be able to add/delete/curate tags for papers and get
     recommendations)</div>
 {% endif %}
 
@@ -86,12 +150,8 @@
 {% endblock %}
 
 {% block elements %}
-
-{# Visualization #}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r73/three.min.js"></script>
-<script src="{{ url_for('static', filename='VisualizationMatrix.js') }}" type="text/babel"></script>
-
+<script src="{{ url_for('static', filename='paper_list.js') }}" type="text/babel"></script>
+<script src="{{ url_for('static', filename='word_list.js') }}" type="text/babel"></script>
 <script src="{{ url_for('static', filename='all_word_list.js') }}" type="text/babel"></script>
 <script src="{{ url_for('static', filename='debugger.js') }}" type="text/babel"></script>
-<script src="{{ url_for('static', filename='paper_list.js') }}" type="text/babel"></script>
 {% endblock %}

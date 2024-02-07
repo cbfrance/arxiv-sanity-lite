@@ -30,7 +30,7 @@ const Paper = props => {
     const thumb_img = p.thumb_url === '' ? null : <div className='rel_img'><img src={p.thumb_url} /></div>;
     // if the user is logged in then we can show add/sub buttons
     let utag_controls = null;
-    if (window.user) {
+    if (window.isLoggedIn) {
         utag_controls = (
             <div className='rel_utags'>
                 <a className="rel_utag rel_utag_add" onClick={adder}>add a tag</a>
@@ -40,39 +40,106 @@ const Paper = props => {
     }
 
     // Create a dotted gauge based on the normalized weight
-    const filledDots = "●".repeat(Math.round(p.normalized_weight.toFixed(2) / 10));
-    const emptyDots = "○".repeat(10 - filledDots.length);
+    const filledDots = "●".repeat(Math.round(p.normalized_weight.toFixed(2) / 25));
+    const emptyDots = "○".repeat(4 - filledDots.length);
     const gauge = filledDots + emptyDots;
+
+    // Function to translate raw tags to full category names
+    const category_translator = (tag) => {
+        const categories = {
+            'cs.AI': 'Artificial Intelligence',
+            'cs.CL': 'Computation and Language',
+            'cs.CC': 'Computational Complexity',
+            'cs.CE': 'Computational Engineering, Finance, and Science',
+            'cs.CG': 'Computational Geometry',
+            'cs.GT': 'Computer Science and Game Theory',
+            'cs.CV': 'Computer Vision and Pattern Recognition',
+            'cs.CY': 'Computers and Society',
+            'cs.CR': 'Cryptography and Security',
+            'cs.DS': 'Data Structures and Algorithms',
+            'cs.DB': 'Databases',
+            'cs.DL': 'Digital Libraries',
+            'cs.DM': 'Discrete Mathematics',
+            'cs.DC': 'Distributed, Parallel, and Cluster Computing',
+            'cs.GL': 'General Literature',
+            'cs.GR': 'Graphics',
+            'cs.AR': 'Hardware Architecture',
+            'cs.HC': 'Human-Computer Interaction',
+            'cs.IR': 'Information Retrieval',
+            'cs.IT': 'Information Theory',
+            'cs.LG': 'Machine Learning',
+            'cs.LO': 'Logic in Computer Science',
+            'cs.MS': 'Mathematical Software',
+            'cs.MA': 'Multiagent Systems',
+            'cs.MM': 'Multimedia',
+            'cs.NI': 'Networking and Internet Architecture',
+            'cs.NE': 'Neural and Evolutionary Computing',
+            'cs.NA': 'Numerical Analysis',
+            'cs.OS': 'Operating Systems',
+            'cs.OH': 'Other Computer Science',
+            'cs.PF': 'Performance',
+            'cs.PL': 'Programming Languages',
+            'cs.RO': 'Robotics',
+            'cs.SI': 'Social and Information Networks',
+            'cs.SE': 'Software Engineering',
+            'cs.SD': 'Sound',
+            'cs.SC': 'Symbolic Computation',
+            'cs.SY': 'Systems and Control',
+        };
+        return categories[tag] || tag;
+    };
+
+    // Translate and link the tags
+    const arxivCatTags = p.tags && typeof p.tags === "string" && p.tags.split(',').map((catTag, index) => {
+        const full_name = category_translator(catTag.trim());
+        const catTag_url = `http://arxiv.org/archive/${catTag.trim()}`;
+        return <div className="row" style={{ gap: "0.3rem ", alignItems: "center" }} key={index}>
+            <a id="tagLink" key={`tagLinkKey_${index}`} href={catTag_url} style={{ fontSize: "8px", textDecoration: "none", display: "inline-block" }}>
+                <span style={{ backgroundColor: "blue", color: "white", padding: "2px 4px" }}>arxiv</span>
+                <span style={{ backgroundColor: "#ccc", color: "blue", padding: "2px 4px" }}>{catTag}</span>
+            </a>
+            {full_name}
+        </div>;
+    });
+
+    const VisualizationMatrix = window.VisualizationMatrix;
 
     return (
         <div className='rel_paper'>
-        {/* <div className='rel_paper' style={{opacity: p.normalized_weight.toFixed(2) + '%'}}> */}
-
-            <div className="rel_score">{p.normalized_weight.toFixed(2)}</div>            
             <h4 className='rel_title'><a href={'http://arxiv.org/abs/' + p.id}>{p.title}</a></h4>
-            <div className='rel_gauge'>{gauge} relevance in this view</div>
-            <div className='rel_authors'>{p.authors}</div>
-            <div className="rel_time">{p.time}</div>
-            <div className='rel_tags'>{p.tags}</div>
-            {utag_controls}
-            {thumb_img}
-            <div className='rel_abs'>{p.summary}</div>
             <div className="row">
-                <div className='rel_more'><a href={similar_url}>similar</a></div>
-                <div className='rel_inspect'><a href={inspect_url}>inspect</a></div>
-                <a href="#" onClick={(e) => {
-                    e.preventDefault(); noop();
-                }}>
-                    save for later
-                </a>
-                <a href="#" onClick={(e) => {
-                    e.preventDefault(); noop();
-                }}>
-                    add to zotero
-                </a>
-                {/* <div className='add_to_zotero'><a href={add_to_zotero_url}>add to zotero</a></div> */}
+                <div className="col">
+                    <div className="rel_score">{p.normalized_weight.toFixed(2)}</div>
+                    <div className='rel_gauge'>{gauge} relevance in this view</div>
+                    <div className='rel_authors'>{p.authors}</div>
+                    <div className="rel_time">{p.time}</div>
+                    <div className='rel_tags'>{arxivCatTags}</div>
+                    {utag_controls}
+                    {thumb_img}
+                    <div className='rel_abs'>{p.summary}</div>
+                    <div className="row">
+                        <div className='rel_more'><a href={similar_url}>similar</a></div>
+                        <div className='rel_inspect'><a href={inspect_url}>inspect</a></div>
+                        <div className="row">
+                            <a href="#" onClick={(e) => {
+                                e.preventDefault(); noop();
+                            }}>
+                                save for later
+                            </a>
+                            <a href="#" onClick={(e) => {
+                                e.preventDefault(); noop();
+                            }}>
+                                add to zotero
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div className="col">
+                    <VisualizationMatrix terms={["One", "Two"]} />
+                </div>
             </div>
-        </div >
+        </div>
+
     )
 }
 
@@ -107,17 +174,20 @@ const TagList = props => {
     const deleter = () => fetch("/del/" + prompt("delete tag name:"))
         .then(response => console.log(response.text()));
     // show the #wordwrap element if the user clicks inspect
-    const show_inspect = () => { document.getElementById("wordwrap").style.display = "block"; };
-    const inspect_elt = words.length > 0 ? <button id="inspect_svm" onClick={show_inspect}>inspect svm</button> : null;
+    const toggle_inspect = () => {
+        const wordwrap = document.getElementById("wordwrap");
+        wordwrap.style.display = wordwrap.style.display === "none" ? "block" : "none";
+    };
+
     return (
         <div>
-            
             <p>Your tags</p>
-            <div id="tagList" className="rel_utags" style={{display: "flex", gap: "0.3rem", flexWrap: "wrap"}}>
+            <div id="tagList" className="rel_utags" style={{ display: "flex", gap: "0.3rem", flexWrap: "wrap" }}>
                 {tlst}
             </div>
             <div className="row">
-                {inspect_elt}
+                {window.words.length > 0 ? <button id="inspect_svm" onClick={toggle_inspect}>toggle svm</button> : null}
+                {window.words.map((word, index) => <div key={index}>{word}</div>)}
                 <button className="rel_tag" onClick={deleter}>delete tag</button>
             </div>
         </div>

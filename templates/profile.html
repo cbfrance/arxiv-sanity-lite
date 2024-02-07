@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block variables %}
+
 {% endblock %}
 
 {% block content %}
@@ -8,13 +9,14 @@
 
     {% if user %}
     <div>
-        <div>
+        <div class="outline">
+            <div><b>Current session</b></div>
+            <div>Logged in user: {{ user }}</div>
         
         </div>
 
-        <div><b>Current session</b></div>
-        <div>Logged in user: {{ user }}</div>
-        <div>
+        <div class="outline">
+            <div><b>Preferences</b></div>
             <label for="classic-mode">Classic Mode:</label>
             <input type="checkbox" id="classic-mode" name="classic-mode" onclick="toggleClassicMode(this)">
             <script>
@@ -40,7 +42,7 @@
             </script>
         </div>
         
-        <div>
+        <div class="col outline">
             <div><b>Email recommendations</b></div>
             <div>
                 Users can receive regular new paper recommendations via email based on their tags.
@@ -48,13 +50,29 @@
                 Register your email address below to receive these recommendations.
                 To stop the recommendations simply delete your email address.
             </div>
-            <div>
-                <form id="email-form" action="{{ url_for('register_email') }}" method="post">
-                    <div class="form-group">
-                        <input type="text" class="form-control" name="email" placeholder="Email address" value="{{ email }}">
+                {% if email %}
+                    <div id="email-display">
+                        <div>🔵 Your email: {{ email }}</div>
+                        <button id="edit-email" class="btn">Edit</button>
                     </div>
-                    <input type="submit" class="btn" value="Set">
-                </form>
+                    <div id="email-edit" style="display: none;">
+                        <form id="email-form" action="{{ url_for('register_email') }}" method="post" class="row">
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="email" placeholder="Email address" value="{{ email }}">
+                            </div>
+                            <input type="submit" class="btn" value="Update">
+                            <input type="submit" class="btn" value="Unsubscribe" onclick="document.getElementById('email-form').email.value = '';">
+                        </form>
+                    </div>
+                {% else %}
+                    <div>🔴 You are not currently subscribed to email recommendations.</div>
+                    <form id="email-form" action="{{ url_for('register_email') }}" method="post" class="row">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="email" placeholder="Email address">
+                        </div>
+                        <input type="submit" class="btn" value="Set">
+                    </form>
+                {% endif %}
             </div>
         </div>
         <br>
@@ -78,7 +96,7 @@
         </div>
 
         <form id="profile-login-form" action="/login" method="POST">
-            <div class="form-group">
+            <div class="form-group row">
               <label>Username:</label>
               <input class="form-control" type="text" name="username">
             </div>
@@ -91,4 +109,13 @@
 {% endblock %}
 
 {% block elements %}
+
+<script>
+document.getElementById('edit-email').addEventListener('click', function() {
+    // Code to execute when the button is clicked
+    document.getElementById('email-display').style.display = 'none';
+    document.getElementById('email-edit').style.display = 'block';
+});
+</script>
+
 {% endblock %}

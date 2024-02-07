@@ -36,12 +36,13 @@ from aslite.db import load_features
 # -----------------------------------------------------------------------------
 # inits and globals
 
-RET_NUM = 100  # number of papers to return per page
+RET_NUM = 5  # number of papers to return per page
 
 app = Flask(__name__)
 
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-app.config["DEBUG"] = os.getenv("FLASK_ENV") == "development"
+# app.config["DEBUG"] = os.getenv("FLASK_ENV") == "development"
+app.config["DEBUG"] = True
 
 # set the secret key so we can cryptographically sign cookies and maintain sessions
 if os.path.isfile("secret_key.txt"):
@@ -58,6 +59,7 @@ app.secret_key = sk
 # globals that manage the (lazy) loading of various state for a request
 
 
+# Returns tags for the current user
 def get_tags():
     if g.user is None:
         return {}
@@ -67,13 +69,13 @@ def get_tags():
         g._tags = tags_dict
     return g._tags
 
-
+# Returns the global papers db
 def get_papers():
     if not hasattr(g, "_pdb"):
         g._pdb = get_papers_db()
     return g._pdb
 
-
+# Returns the global metas db
 def get_metas():
     if not hasattr(g, "_mdb"):
         g._mdb = get_metas_db()
@@ -121,6 +123,7 @@ def render_pid(pid):
         utags=[t for t, pids in tags.items() if pid in pids],
         summary=d["summary"],
         thumb_url=thumb_url,
+        meta=d,
     )
 
 
@@ -142,10 +145,11 @@ def time_rank():
 
 
 def svm_rank(tags: str = "", pid: str = "", C: float = 0.01):
+
     # tag can be one tag or a few comma-separated tags or 'all' for all tags we have in db
     # pid can be a specific paper id to set as positive for a kind of nearest neighbor search
     if not (tags or pid):
-        return [], [], []
+        return [], [], [], []
 
     # load all of the features
     features = load_features()
@@ -169,7 +173,7 @@ def svm_rank(tags: str = "", pid: str = "", C: float = 0.01):
                     y[ptoi[pid]] = 1.0
 
     if y.sum() == 0:
-        return [], [], []  # there are no positives?
+        return [], [], [], []  # there are no positives?
 
     # classify
     clf = svm.LinearSVC(
@@ -196,16 +200,16 @@ def svm_rank(tags: str = "", pid: str = "", C: float = 0.01):
 
     # Get the words that score most positively 
     # These can be used to suggest tags
-    all_top_words = []
+    all_top_terms = []
     for ix in list(sortix[:100]):
-        all_top_words.append(
+        all_top_terms.append(
             {
-                "word": ivocab[ix],
+                "term": ivocab[ix],
                 "weight": weights[ix],
             }
         )
 
-    return pids, scores, words, all_top_words
+    return pids, scores, words, all_top_terms
 
 
 def search_rank(q: str = ""):
@@ -241,13 +245,13 @@ def default_context():
     context["user"] = g.user if g.user is not None else ""
     return context
 
-
 def main_handler():
     # default settings
     default_rank = "time"
     default_tags = ""
     default_time_filter = ""
     default_skip_have = "no"
+
 
     # override variables with any provided options via the interface
     opt_rank = request.args.get(
@@ -280,17 +284,18 @@ def main_handler():
     
     # rank papers: by tags, by time, by random
     words = []  # only populated in the case of svm rank
+    all_top_terms = []  # only populated in the case of svm rank
     rank_description = ''  # description of the current ranking method
 
     if opt_rank == "tags":
-        pids, scores, words, all_top_words = svm_rank(tags=opt_tags, C=C)
+        pids, scores, words, all_top_terms = svm_rank(tags=opt_tags, C=C)
         rank_description = '''
         Papers are ranked based on their relevance to the selected tags. 
         An SVM (Support Vector Machine) model is trained where the positive examples are the papers with the selected tags. 
         The model then ranks the papers based on their distance from the decision boundary, with papers closer to the boundary of the positive class ranked higher.
         '''
     elif opt_rank == "pid":
-        pids, scores, words, all_top_words = svm_rank(pid=opt_pid, C=C)
+        pids, scores, words, all_top_terms = svm_rank(pid=opt_pid, C=C)
         rank_description = '''
         Papers are ranked based on their similarity to the selected paper. 
         An SVM model is trained where the positive example is the selected paper. 
@@ -368,13 +373,18 @@ def main_handler():
     rtags = [{"name": t, "n": len(pids)} for t, pids in tags.items()]
     if rtags:
         rtags.append({"name": "all"})
+    
+    # Get the entire feature vocabulary
+    features = load_features()
+    all_terms = list(features['vocab'].keys())
 
     # build the page context information and render
     context = default_context()
+    context["all_terms"] = all_terms
     context["papers"] = papers
     context["tags"] = rtags
     context["words"] = words
-    context["all_top_words"] = all_top_words
+    context["all_top_terms"] = all_top_terms
     context["rank_description"] = rank_description 
     context[
         "words_desc"
@@ -404,22 +414,56 @@ def inspect():
     if pid not in pdb:
         return "error, malformed pid"  # todo: better error handling
 
-    # load the tfidf vectors, the vocab, and the idf table
+    # Handle the TF-IDF vectors, the vocabulary, and the IDF table. 
+
+    # Load the features from the feature file. 
+    # The features include the TF-IDF vectors, the vocabulary, and the IDF table.
     features = load_features()
+
+    # Extract the TF-IDF vectors from the features. 
+    # These vectors represent the importance of each word in each document.
+    # x is a sparse matrix. 
+    # Each row represents a document and each column represents a word in the vocabulary. 
+    # The value at a specific row and column is the weight of that word in the corresponding document.
     x = features["x"]
+
+    # Extract the IDF table from the features. 
     idf = features["idf"]
+
+    # Create a reverse vocabulary mapping from index to word. 
+    # This allows us to look up a word given its index in the vocabulary.
+    # ivocab = {
+    #     0: "word1",
+    #     1: "word2",
+    #     2: "word3",
+    #     ...
+    # }
     ivocab = {v: k for k, v in features["vocab"].items()}
+
+    # Find the index of the paper id in the list of paper ids. 
+    # This is needed to locate the correct TF-IDF vector for the paper.
     pix = features["pids"].index(pid)
+
+    # Find the indices of the non-zero elements in the TF-IDF vector for the paper. 
+    # These indices correspond to the words that appear in the paper abstract.
     wixs = np.flatnonzero(np.asarray(x[pix].todense()))
+
+    # Initialize an empty list to hold the words and their weights. 
+    # Each word will be represented by a dictionary containing the word, its weight, and its IDF value.
     words = []
+
+    # For each index in the list of non-zero indices, append a dictionary containing the word, its weight, and its IDF value to the list of words.
     for ix in wixs:
         words.append(
             {
-                "word": ivocab[ix],
-                "weight": float(x[pix, ix]),
-                "idf": float(idf[ix]),
+                "word": ivocab[ix],  # The word
+                "weight": float(x[pix, ix]),  # The weight of the word in the document, as given by the TF-IDF vector
+                "idf": float(idf[ix]),  # The inverse document frequency of the word
             }
         )
+
+    # Sort the list of words by their weights in descending order. 
+    # This will help identify the most important words in the document.
     words.sort(key=lambda w: w["weight"], reverse=True)
 
     # package everything up and render
@@ -440,6 +484,34 @@ def profile():
         email = edb.get(g.user, "")
         context["email"] = email
     return render_template("profile.html", **context)
+
+@app.route("/stream")
+def profile():
+    context = default_context()
+    # Create mock data for a streamgraph implemented in chartjs
+    labels = ["January", "February", "March", "April", "May", "June", "July"]
+    data = {
+        "labels": labels,
+        "datasets": [
+            {
+                "label": "theme 1",
+                "data": [65, 59, 80, 81, 56, 55, 40],
+                "fill": "-1",
+            },
+            {
+                "label": "theme 2",
+                "data": [28, 48, 40, 19, 86, 27, 90],
+                "fill": "-1",
+            },
+            {
+                "label": "theme 3",
+                "data": [18, 48, 77, 9, 100, 27, 40],
+                "fill": "-1",
+            }
+        ]
+    }
+    context["streamgraph_data"] = data
+    return render_template("stream.html", **context)
 
 
 @app.route("/stats")

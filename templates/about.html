@@ -5,19 +5,25 @@
 
 {% block content %}
 <div id="aboutwrap content">
-    <p>
-        A much lighter-weight arxiv-sanity from-scratch re-write. Periodically polls arxiv API for new papers. Then
-        allows users to tag papers of interest, and recommends new papers for each tag based on SVMs over tfidf features
-        of paper abstracts. Allows one to search, rank, sort, slice and dice these results in a pretty web UI. Lastly,
-        arxiv-sanity-lite can send you daily emails with recommendations of new papers based on your tags. Curate your
-        tags, track recent papers in your area, and don't miss out!
-    </p>
-    <p>
-        This particular instance indexes papers from the following categories:
+    <h2>
+        This site sends you emails with recommendations of new papers based on the tags you add to papers. 
+    </h2>
+    <h3>
+        For get better recommendations, add more tags. To find new tags, you can discover papers through the "similar" button.
+    </h3>
+    <ol>
+        <li>Log in</li>
+        <li>Browse the corpus of papers [1] and tag some papers</li>
+        <li>Get email recommendations</li>
+    </ol>
+    <p>How it works: We periodically poll the arxiv API for new papers. You can tag papers of interest, then recommends new papers for each tag based on SVMs over tfidf features of paper abstracts. You can search, rank and sort, slice and dice these results in a pretty web UI. Lastly, arxiv-sanity-lite can send you daily emails with recommendations of new papers based on your tags. Curate your tags, track recent papers in your area, and don't miss out!</p>
+        
+        
+        <p>[1] This instance has a corpus of about 50,000 papers from the following categories of arxiv:</p>
         <ul>
-            <li><a href="https://arxiv.org/list/cs.CV/recent">cs.CV - Computer Vision and Pattern Recognition</a></li>
             <li><a href="https://arxiv.org/list/cs.HC/recent">cs.HC - Human-Computer Interaction</a></li>
             <li><a href="https://arxiv.org/list/cs.CY/recent">cs.CY - Computers and Society</a></li>
+            <li><a href="https://arxiv.org/list/cs.CV/recent">cs.CV - Computer Vision and Pattern Recognition</a></li>
             <li><a href="https://arxiv.org/list/cs.MM/recent">cs.MM - Multimedia</a></li>
             <li><a href="https://arxiv.org/list/cs.OH/recent">cs.OH - Other Computer Science</a></li>
             <li><a href="https://arxiv.org/list/cs.SD/recent">cs.SD - Sound</a></li>

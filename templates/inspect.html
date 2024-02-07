@@ -12,6 +12,10 @@
 <div class="row">
     <div id="wrap" class="col">
     </div>
+</div>
+<div class="row">
+    <div id="debugger" class="col">
+    </div>
     <div id="wordwrap" class="col">
     </div>
 </div>
@@ -20,4 +24,5 @@
 {% block elements %}
 <script src="{{ url_for('static', filename='paper_detail.js') }}" type="text/babel"></script>
 <script src="{{ url_for('static', filename='word_list.js') }}" type="text/babel"></script>
+<script src="{{ url_for('static', filename='debugger.js') }}" type="text/babel"></script>
 {% endblock %}

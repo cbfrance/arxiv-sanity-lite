@@ -17,7 +17,11 @@ a {
 }
 
 .rel_title {
-  font-weight: 800;
+  font-weight: 600;
 }
 
 
+
+.outline {
+  border: 2px double blue; padding: 1rem;
+}

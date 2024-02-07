@@ -16,16 +16,25 @@
 
 </head>
 
-<body class="col">
-    <nav class="row">
-        <a href="/">arxiv-sanity</a>
-        <a href="/profile">
-            {{ 'profile' if user else 'login' }}
-        </a>
-        <a href="/stats">stats</a>
-        <a href="/about">about</a>
-        <a href="/?rank=tags&tags=all&time_filter=7&skip_have=yes">recommended this week</a>
-        <a href="/?rank=tags&tags=all&time_filter=30&skip_have=yes">this month</a>
+<body class="col snow">
+    <nav class="row" style="gap: 1rem; margin: 1rem 0;">
+        <a href="/">latest</a>
+        <a href="/?rank=tags&tags=all&time_filter=7&skip_have=no"
+            onclick="if (!window.isLoggedIn) { alert('Please log in first'); window.location.href = '/profile'; return false; }">recommended
+            this week</a>
+        <a href="/?rank=tags&tags=all&time_filter=30&skip_have=no"
+            onclick="if (!window.isLoggedIn) { alert('Please log in first'); window.location.href = '/profile'; return false; }">this
+            month</a>
+        <a href="/?rank=tags&tags=all&time_filter=365&skip_have=no"
+            onclick="if (!window.isLoggedIn) { alert('Please log in first'); window.location.href = '/profile'; return false; }">this
+            year</a>
+        <div class="row" style="margin-left: auto; gap: 1rem">
+            <a href="/profile">
+                {{ 'profile' if user else 'login' }}
+            </a>
+            <a href="/stats">stats</a>
+            <a href="/about">about</a>
+        </div>
     </nav>
 
     {% block content %}
@@ -47,14 +56,20 @@
     {% block elements %}
     {% endblock %}
 
+    {# Theme switcher #}
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
             var classicMode = localStorage.getItem('classic-mode') === 'true';
-            console.log("🚀 ~ file: base.html:51 ~ document.addEventListener ~ classicMode:", classicMode)
             if (classicMode) {
                 document.body.classList.add('classic-mode');
             }
         });
+
+    </script>
+
+    {# Global user metadata #}
+    <script>
+        window.isLoggedIn = {{ 'true' if user else 'false' }};
     </script>
 
     <!-- Notification toasts -->

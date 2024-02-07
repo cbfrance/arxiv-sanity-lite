@@ -2,20 +2,26 @@ body {
     padding: 1rem;
 }
 
+body.col {
+    max-width: 900px;
+    margin: 10rem auto 0;
+}
+
 /* =========================================== */
 /* Papers */
 /* =========================================== */
 .rel_papers {
-    gap: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem !important;
 }
-
 
 /* =========================================== */
 /* Rows and columns */
 /* =========================================== */
 .row, .col {
     display: flex;
-    gap: 1rem;
+    gap: 0.5rem;
 }
 
 .row {
@@ -24,4 +30,13 @@ body {
 
 .col {
     flex-direction: column;
+}
+
+#pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 2rem;
+    gap: 2rem;
 }

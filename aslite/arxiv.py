@@ -9,20 +9,23 @@ import feedparser
 from collections import OrderedDict
 
 logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 def get_response(search_query, start_index=0):
     """ pings arxiv.org API to fetch a batch of 100 papers """
     # fetch raw response
-    base_url = 'http://arxiv.org/api/query?'
+    base_url = 'http://export.arxiv.org/api/query?'
     add_url = 'search_query=%s&sortBy=lastUpdatedDate&start=%d&max_results=100' % (search_query, start_index)
     #add_url = 'search_query=%s&sortBy=submittedDate&start=%d&max_results=100' % (search_query, start_index)
     search_query = base_url + add_url
     logger.debug(f"Searching arxiv for {search_query}")
     with urllib.request.urlopen(search_query) as url:
         response = url.read()
+        logger.info(f"Response status code: {url.getcode()}")
+        logger.info(f"Response body: {response}")
 
     if url.status != 200:
-        logger.error(f"arxiv did not return status 200 response")
+        logger.error(f"arxiv did not return status 200 response. Status code: {url.getcode()}, Response body: {response}")
 
     return response
 

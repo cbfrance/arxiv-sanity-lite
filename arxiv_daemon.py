@@ -56,9 +56,20 @@ if __name__ == "__main__":
     # GR = Graphics
     # DL = Digital Libraries
     
+    # Original Karpathy setup:
+    # q = 'cat:cs.CV+OR+cat:cs.LG+OR+cat:cs.CL+OR+cat:cs.AI+OR+cat:cs.NE+OR+cat:cs.RO'
+
+    # Modification with more HCI focus
     # q = "cat:cs.IR+OR+cat:cs.CL+OR+cat:cs.HC+OR+cat:cs.CY+OR+cat:cs.MM+OR+cat:cs.SD"
+
+    # Reduction (great little set, low volume):
     # q = "cat:cs.HC+OR+cat:cs.CY"
-    q = "cat:cs.HC+OR+cat:cs.CY+OR+cat:cs.CV+OR+cat:cs.OH+OR+cat:cs.GR+OR+cat:cs.MM+OR+cat:cs.SD"
+
+    # Re-Expanded (more ML focus):
+    # q = "cat:cs.HC+OR+cat:cs.CY+OR+cat:cs.CV+OR+cat:cs.OH+OR+cat:cs.GR+OR+cat:cs.MM+OR+cat:cs.SD"
+
+    # Removed CV since it's dominating:
+    q = "cat:cs.HC+OR+cat:cs.CY+OR+cat:cs.OH+OR+cat:cs.GR+OR+cat:cs.MM+OR+cat:cs.SD"
 
     pdb = get_papers_db(flag="c")
     mdb = get_metas_db(flag="c")
@@ -77,9 +88,12 @@ if __name__ == "__main__":
         # attempt to fetch a batch of papers from arxiv api
         ntried = 0
         while True:
+            logging.info("About to query arXiv API...")
             try:
                 resp = get_response(search_query=q, start_index=k)
+                logging.info("Successfully queried arXiv API.")
                 papers = parse_response(resp)
+                logging.info("Fetched %d papers from arXiv API." % len(papers))
                 time.sleep(0.5)
                 if len(papers) == 100:
                     break  # otherwise we have to try again
