@@ -28,6 +28,7 @@ const Paper = props => {
     const similar_url = "/?rank=pid&pid=" + p.id;
     const inspect_url = "/inspect?pid=" + p.id;
     const thumb_img = p.thumb_url === '' ? null : <div className='rel_img'><img src={p.thumb_url} /></div>;
+
     // if the user is logged in then we can show add/sub buttons
     let utag_controls = null;
     if (window.user) {
@@ -46,10 +47,11 @@ const Paper = props => {
 
     return (
         <div className='rel_paper'>
-        {/* <div className='rel_paper' style={{opacity: p.normalized_weight.toFixed(2) + '%'}}> */}
+            {/* <div className='rel_paper' style={{opacity: p.normalized_weight.toFixed(2) + '%'}}> */}
 
-            <div className="rel_score">{p.normalized_weight.toFixed(2)}</div>            
-            <h4 className='rel_title'><a href={'http://arxiv.org/abs/' + p.id}>{p.title}</a></h4>
+            <div className="rel_score">{p.normalized_weight.toFixed(2)}</div>
+            {/* <h2 className='rel_title'><a href={'http://arxiv.org/abs/' + p.id}>{p.title}</a></h2> */}
+            <h2 className='rel_title'><a href={inspect_url}>{p.title}</a></h2>
             <div className='rel_gauge'>{gauge} relevance in this view</div>
             <div className='rel_authors'>{p.authors}</div>
             <div className="rel_time">{p.time}</div>
@@ -59,7 +61,7 @@ const Paper = props => {
             <div className='rel_abs'>{p.summary}</div>
             <div className="row">
                 <div className='rel_more'><a href={similar_url}>similar</a></div>
-                <div className='rel_inspect'><a href={inspect_url}>inspect</a></div>
+                {/* <div className='rel_inspect'><a href={inspect_url}>inspect</a></div> */}
                 <a href="#" onClick={(e) => {
                     e.preventDefault(); noop();
                 }}>
@@ -104,14 +106,15 @@ const Tag = props => {
 const TagList = props => {
     const lst = props.tags;
     const tlst = lst.map((jtag, ix) => <Tag key={ix} tag={jtag} />);
-    const deleter = () => fetch("/del/" + prompt("delete tag name:"))
-        .then(response => console.log(response.text()));
+    const deleter = (tagName) => () => fetch("/del/" + tagName)
+        .then(response => response.text())
+        .then(text => console.log(text));
     // show the #wordwrap element if the user clicks inspect
     const show_inspect = () => { document.getElementById("wordwrap").style.display = "block"; };
     const inspect_elt = words.length > 0 ? <div id="inspect_svm" onClick={show_inspect}>inspect</div> : null;
     return (
         <div>
-            <div className="rel_tag" onClick={deleter}>-</div>
+            <div className="rel_tag" onClick={() => deleter(t.name)}>-</div>
             <div id="tagList" className="rel_utags">
                 {tlst}
             </div>
@@ -120,10 +123,10 @@ const TagList = props => {
     )
 }
 
-// render papers into #wrap
+// 1. render papers into #wrap
 ReactDOM.render(<PaperList papers={papers} />, document.getElementById('wrap'));
 
-// render tags into #tagwrap, if it exists
+// 2. render tags into #tagwrap, if it exists
 let tagwrap_elt = document.getElementById('tagwrap');
 if (tagwrap_elt) {
     ReactDOM.render(<TagList tags={tags} />, tagwrap_elt);

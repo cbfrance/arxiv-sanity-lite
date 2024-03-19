@@ -4,20 +4,32 @@ const Word = props => {
     const word = props.word;
     // word, weight, idf
     const containerStyle = {
-        position: 'relative'
+        position: 'relative',
+        display: 'flex',
+        gap: '2rem',
     };
     const barStyle = {
         width: `${word.weight * 100}%`,
         backgroundColor: 'rgba(0,0,0,0.1)',
         height: '100%',
-        position: 'absolute'
+        position: 'absolute',
+        zIndex: -1
     };
+
+
+    const encodedWord = encodeURIComponent(word.word);
+    const query = `http://74.50.48.118/?q=${encodedWord}&rank=time&tags=&pid=&time_filter=&svm_c=0.01&skip_have=no`;
+
     return (
         <div style={containerStyle} className='rel_word'>
-            <div style={barStyle}></div>
             {/* @TODO: on the paper list view, word.idf is undefined. @cbfrance 2023-Sept-9 */}
-            <div className='rel_word_idf'>{word.idf ? word.idf.toFixed(2) : ""}</div>
-            <div className="rel_word_txt">{word.word}</div>
+            {/* <div className='rel_word_idf'>{word.idf ? word.idf.toFixed(2) : ""}</div> */}
+            <div className="rel_word_txt">
+                <a href={query}>
+                    {word.word}
+                </a>
+            </div>
+            <div style={barStyle}></div>
         </div>
     )
 }
@@ -29,11 +41,11 @@ const WordList = props => {
     const wlst = sortedList.map((jword, ix) => <Word key={ix} word={jword} />);
     return (
         <div>
-            <div>{words_desc}</div>
+            <div style={{ marginBottom: '1rem' }}>{words_desc}</div>
             <div id="wordList" className="rel_words">
                 {wlst}
             </div>
-        </div>
+        </div >
     )
 }
 

@@ -1,4 +1,11 @@
-@import url("./style_base.css");
 @import url("./style_layout.css");
 /* @import url("./style_classic.css"); */
 @import url("./style_classic_lite.css");
+@import url("./style_tufte.css");
+
+button,
+p>a {
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+        Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}

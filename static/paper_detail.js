@@ -1,20 +1,24 @@
 'use strict';
 
-const PaperLite = props => {
+const PaperDetail = props => {
     const p = props.paper;
-    const thumb_img = p.thumb_url === '' ? null : <div data-cy="img_thumb" class='rel_img'><img src={p.thumb_url} /></div>;
+    const thumb_img = p.thumb_url === '' ? null : <div data-cy="img_thumb" className='rel_img'><img src={p.thumb_url} /></div>;
 
     return (
-        <div class='rel_paper'>
-            <div class='rel_title'><a href={'http://arxiv.org/abs/' + p.id}><h4>{p.title}</h4></a></div>
-            <div class='rel_authors'>{p.authors}</div>
-            <div class="rel_time">{p.time}</div>
-            <div class='rel_tags'>{p.tags}</div>
-            <div class='rel_abs'><p>{p.summary}</p></div>
+        <div className='rel_paper'>
+            <div className='rel_title'>
+                <a href={'http://arxiv.org/abs/' + p.id}>
+                    <h1>{p.title}</h1>
+                </a>
+            </div>
+            <h2 className='rel_authors'>{p.authors}</h2>
+            <h3 className="rel_time">{p.time}</h3>
+            <h3 className='rel_tags'>{p.tags}</h3>
+            <p className='rel_abs'>{p.summary}</p>
             {thumb_img}
-        </div>
+        </div >
     )
 }
 
-ReactDOM.render(<PaperLite paper={paper} />, document.getElementById('wrap'))
+ReactDOM.render(<PaperDetail paper={paper} />, document.getElementById('wrap'))
 
