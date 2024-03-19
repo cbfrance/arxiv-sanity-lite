@@ -237,6 +237,7 @@ def main_handler():
     default_tags = ""
     default_time_filter = ""
     default_skip_have = "no"
+    normalized_scores = []
 
     # override variables with any provided options via the interface
     opt_rank = request.args.get(
@@ -271,7 +272,13 @@ def main_handler():
     words = []  # only populated in the case of svm rank
     rank_description = ''  # description of the current ranking method
 
-    if opt_rank == "tags":
+    if opt_rank == "search":
+        pids, scores = search_rank(q=opt_q)
+        rank_description = '''
+        Papers are ranked based on the relevance to the search query. 
+        The search considers paper titles, authors, and summaries to find the most relevant papers based on the query terms.
+        '''
+    elif opt_rank == "tags":
         pids, scores, words = svm_rank(tags=opt_tags, C=C)
         rank_description = '''
         Papers are ranked based on their relevance to the selected tags. 
